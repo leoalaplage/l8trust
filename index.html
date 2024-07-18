@@ -94,19 +94,32 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(-100%, 0); }
         }
-        #sector-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        #sector-chart {
+            width: 100%;
+            margin-top: 20px;
         }
-        #sector-list div {
-            text-align: left;
+        .sector-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .sector-name {
+            width: 150px;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .bar {
+            height: 20px;
+            transition: width 0.5s ease-in-out;
+        }
+        .performance-value {
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="blink">leoalaplage</h1>
+        <h1 class="blink">L8TRUST</h1>
         <div id="market-status"></div>
         <div id="major-indices">
             <h3>Major Indices</h3>
@@ -118,7 +131,7 @@
         </div>
         <div id="sector-performance">
             <h3>Sector Performance</h3>
-            <div id="sector-list"></div>
+            <div id="sector-chart"></div>
         </div>
         <div id="stock-ticker">
             <div id="ticker-content"></div>
@@ -256,22 +269,59 @@
         }
     }
 
+    function updateSectorChart(sectorData) {
+        const chartContainer = document.getElementById('sector-chart');
+        chartContainer.innerHTML = '';
+
+        // Sort sectors by performance
+        sectorData.sort((a, b) => b.performance - a.performance);
+
+        // Find the maximum absolute performance for scaling
+        const maxPerformance = Math.max(...sectorData.map(s => Math.abs(s.performance)));
+
+        sectorData.forEach(sector => {
+            const sectorDiv = document.createElement('div');
+            sectorDiv.className = 'sector-bar';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'sector-name';
+            nameSpan.textContent = sector.name;
+
+            const barDiv = document.createElement('div');
+            barDiv.className = 'bar';
+            const width = Math.abs(sector.performance) / maxPerformance * 70; // 70% max width
+            barDiv.style.width = `${width}%`;
+            barDiv.style.backgroundColor = sector.performance >= 0 ? '#00FF00' : '#FF0000';
+
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'performance-value';
+            valueSpan.textContent = `${sector.performance > 0 ? '+' : ''}${sector.performance.toFixed(2)}%`;
+            valueSpan.style.color = sector.performance >= 0 ? '#00FF00' : '#FF0000';
+
+            sectorDiv.appendChild(nameSpan);
+            sectorDiv.appendChild(barDiv);
+            sectorDiv.appendChild(valueSpan);
+
+            chartContainer.appendChild(sectorDiv);
+        });
+    }
+
     async function fetchSectorPerformance() {
         const sectors = [
             { symbol: 'XLK', name: 'Technology' },
             { symbol: 'XLV', name: 'Healthcare' },
             { symbol: 'XLF', name: 'Financials' },
             { symbol: 'XLE', name: 'Energy' },
-            { symbol: 'XLY', name: 'Consumer Discretionary' },
-            { symbol: 'XLP', name: 'Consumer Staples' },
+            { symbol: 'XLY', name: 'Consumer Cyclical' },
+            { symbol: 'XLP', name: 'Consumer Defensive' },
             { symbol: 'XLI', name: 'Industrials' },
-            { symbol: 'XLB', name: 'Materials' },
+            { symbol: 'XLB', name: 'Basic Materials' },
             { symbol: 'XLU', name: 'Utilities' },
-            { symbol: 'XLRE', name: 'Real Estate' }
+            { symbol: 'XLRE', name: 'Real Estate' },
+            { symbol: 'XLC', name: 'Communication Services' }
         ];
 
-        const sectorList = document.getElementById('sector-list');
-        sectorList.innerHTML = '';
+        const sectorPerformance = [];
 
         for (const sector of sectors) {
             try {
@@ -279,19 +329,15 @@
                 const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
                 const response = await fetch(url);
                 const data = await response.json();
-                const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
-                const colorClass = parseFloat(changePercent) >= 0 ? 'positive-change' : 'negative-change';
-                
-                sectorList.innerHTML += `
-                    <div>
-                        ${name}: <span class="${colorClass}">${changePercent}%</span>
-                    </div>
-                `;
+                const performance = ((data.c - data.pc) / data.pc * 100);
+                sectorPerformance.push({ name, performance });
             } catch (error) {
                 console.error(`Error fetching data for ${sector.name}:`, error);
-                sectorList.innerHTML += `<div>${sector.name}: Error fetching data</div>`;
+                sectorPerformance.push({ name: sector.name, performance: 0 });
             }
         }
+
+        updateSectorChart(sectorPerformance);
     }
 
     function refreshAllData() {
