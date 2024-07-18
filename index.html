@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L8TRUST</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #000080;
+            color: #00FF00;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            color: #FFFF00;
+            text-shadow: 2px 2px #FF00FF;
+        }
+        #market-status, #major-indices, #rss-feed {
+            border: 2px solid #00FF00;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #000000;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #market-status {
+            text-align: center;
+        }
+        h3 {
+            color: #FF00FF;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: underline;
+        }
+        .positive-change { color: #00FF00; }
+        .negative-change { color: #FF0000; }
+        .market-open { color: #00FF00; }
+        .market-extended { color: #FFA500; }
+        .market-closed { color: #FF0000; }
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+        #refresh-info {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #FFFFFF;
+        }
+        #news-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        #news-list li {
+            margin-bottom: 10px;
+        }
+        #news-list a {
+            color: #00FF00;
+            text-decoration: none;
+        }
+        #news-list a:hover {
+            text-decoration: underline;
+        }
+        #major-indices {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="blink">L8TRUST</h1>
+        <div id="market-status"></div>
+        <div id="major-indices">
+            <h3>Major Indices</h3>
+            <p>
+                <span id="spy-performance">S&P 500: -1.12%</span> |
+                <span id="qqq-performance">Nasdaq 100: -2.33%</span> |
+                <span id="dia-performance">Dow Jones: 0.18%</span>
+            </p>
+        </div>
+        <div id="rss-feed">
+            <h3>Latest News</h3>
+            <ul id="news-list"></ul>
+        </div>
+        <div id="refresh-info">This page will refresh in <span id="countdown">60</span> seconds</div>
+    </div>
+
+    <script>
+    const apiKey = 'cha3cg1r01qhe0r9rhg0cha3cg1r01qhe0r9rhgg';
+    const marketStatusApiKey = 'NQpPDWBnyk3zbab7leFzAavOzTnNpWjY';
+    let countdown = 60;
+
+    async function fetchMarketStatus() {
+        const marketStatusUrl = `https://api.polygon.io/v1/marketstatus/now?apiKey=${marketStatusApiKey}`;
+        try {
+            const response = await fetch(marketStatusUrl);
+            const data = await response.json();
+            if (!data || data.error) {
+                throw new Error(data ? data.error : 'Unknown error');
+            }
+            displayMarketStatus(data);
+        } catch (error) {
+            console.error('Error fetching market status:', error);
+            document.getElementById('market-status').innerHTML = `
+                <p>Error fetching market status. ${error.message}</p>
+                <p>Check the console for more details.</p>
+            `;
+        }
+    }
+
+    function displayMarketStatus(statusData) {
+        const marketStatusElement = document.getElementById('market-status');
+        const nyseStatus = statusData.exchanges.nyse;
+        const nasdaqStatus = statusData.exchanges.nasdaq;
+
+        const nyseColorClass = (nyseStatus === 'open') 
+            ? 'market-open' 
+            : (nyseStatus === 'extended-hours') 
+            ? 'market-extended' 
+            : 'market-closed';
+
+        const nasdaqColorClass = (nasdaqStatus === 'open') 
+            ? 'market-open' 
+            : (nasdaqStatus === 'extended-hours') 
+            ? 'market-extended' 
+            : 'market-closed';
+
+        marketStatusElement.innerHTML = `NYSE: 
+            <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
+            <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
+    }
+
+    async function fetchIndexPerformance(symbol) {
+        const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
+        return `${changePercent}%`;
+    }
+
+    async function displayIndexPerformance(symbol, elementId, indexName) {
+        const performanceElement = document.getElementById(elementId);
+        try {
+            const changePercent = await fetchIndexPerformance(symbol);
+            if (performanceElement) {
+                const spanElement = document.createElement('span');
+                spanElement.textContent = changePercent;
+                spanElement.className = parseFloat(changePercent) > 0 ? 'positive-change' : 'negative-change';
+                performanceElement.innerHTML = `${indexName}: `;
+                performanceElement.appendChild(spanElement);
+            }
+        } catch (error) {
+            console.error(`Error displaying ${indexName} performance:`, error);
+            if (performanceElement) {
+                performanceElement.textContent = `Error displaying ${indexName} performance.`;
+            }
+        }
+    }
+
+    async function loadRSSFeed() {
+        const rssUrl = 'https://breakingthenews.net/news-feed.xml';
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+        
+        try {
+            const response = await fetch(proxyUrl);
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            
+            const items = xmlDoc.querySelectorAll('item');
+            const newsList = document.getElementById('news-list');
+            newsList.innerHTML = '';
+            
+            items.forEach(item => {
+                const title = item.querySelector('title').textContent;
+                const link = item.querySelector('link').textContent;
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = link;
+                a.textContent = title;
+                li.appendChild(a);
+                newsList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error fetching RSS feed:', error);
+            document.getElementById('news-list').innerHTML = '<li>Error loading news feed. Please try again later.</li>';
+        }
+    }
+
+    function refreshAllData() {
+        fetchMarketStatus();
+        displayIndexPerformance('SPY', 'spy-performance', 'S&P 500');
+        displayIndexPerformance('QQQ', 'qqq-performance', 'Nasdaq 100');
+        displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
+        loadRSSFeed();
+        countdown = 60;
+    }
+
+    function updateCountdown() {
+        countdown--;
+        document.getElementById('countdown').textContent = countdown;
+        if (countdown <= 0) {
+            refreshAllData();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        refreshAllData();
+        setInterval(updateCountdown, 1000);
+    });
+    </script>
+</body>
+</html>
