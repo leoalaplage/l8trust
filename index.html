@@ -23,7 +23,7 @@
             color: #FFFF00;
             text-shadow: 2px 2px #FF00FF;
         }
-        #market-status, #major-indices, #rss-feed {
+        #market-status, #major-indices, #rss-feed, #stock-ticker {
             border: 2px solid #00FF00;
             padding: 10px;
             margin-top: 20px;
@@ -74,11 +74,31 @@
         #major-indices {
             text-align: center;
         }
+        #stock-ticker {
+            overflow: hidden;
+            padding: 10px 0;
+            white-space: nowrap;
+        }
+        #ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 50s linear infinite;
+        }
+        #ticker-content:hover {
+            animation-play-state: paused;
+        }
+        #ticker-content span {
+            margin-right: 40px;
+        }
+        @keyframes ticker {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="blink">L8TRUST</h1>
+        <h1 class="blink">COUCOU LOULOU </h1>
         <div id="market-status"></div>
         <div id="major-indices">
             <h3>Major Indices</h3>
@@ -88,17 +108,20 @@
                 <span id="dia-performance">Dow Jones: 0.18%</span>
             </p>
         </div>
+        <div id="stock-ticker">
+            <div id="ticker-content"></div>
+        </div>
         <div id="rss-feed">
             <h3>Latest News</h3>
             <ul id="news-list"></ul>
         </div>
-        <div id="refresh-info">This page will refresh in <span id="countdown">60</span> seconds</div>
+        <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
     </div>
 
     <script>
     const apiKey = 'cha3cg1r01qhe0r9rhg0cha3cg1r01qhe0r9rhgg';
     const marketStatusApiKey = 'NQpPDWBnyk3zbab7leFzAavOzTnNpWjY';
-    let countdown = 60;
+    let countdown = 120;
 
     async function fetchMarketStatus() {
         const marketStatusUrl = `https://api.polygon.io/v1/marketstatus/now?apiKey=${marketStatusApiKey}`;
@@ -197,13 +220,38 @@
         }
     }
 
+    async function fetchStockData(symbol) {
+        const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
+        return { symbol, price: data.c.toFixed(2), changePercent };
+    }
+
+    async function updateStockTicker() {
+        const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA', 'AVGO', 'JPM', 'WMT', 'V', 'XOM', 'UNH', 'NVO', 'MA', 'PG', 'ORCL', 'JNJ', 'COST', 'HD', 'ASML', 'BAC', 'MRK', 'ABBV', 'CVX', 'KO', 'NFLX', 'TM', 'AMD', 'ADBE', 'AZN', 'CRM', 'SHEL', 'SAP', 'PEP', 'NVS', 'LIN', 'TMUS', 'QCOM', 'WFC', 'TMO', 'ACN', 'CSCO', 'MCD', 'DHR'];
+        const tickerContent = document.getElementById('ticker-content');
+        tickerContent.innerHTML = '';
+
+        for (const stock of stocks) {
+            try {
+                const { symbol, price, changePercent } = await fetchStockData(stock);
+                const colorClass = parseFloat(changePercent) >= 0 ? 'positive-change' : 'negative-change';
+                tickerContent.innerHTML += `<span>${symbol}: $${price} <span class="${colorClass}">${changePercent}%</span></span>`;
+            } catch (error) {
+                console.error(`Error fetching data for ${stock}:`, error);
+            }
+        }
+    }
+
     function refreshAllData() {
         fetchMarketStatus();
         displayIndexPerformance('SPY', 'spy-performance', 'S&P 500');
         displayIndexPerformance('QQQ', 'qqq-performance', 'Nasdaq 100');
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
+        updateStockTicker();
         loadRSSFeed();
-        countdown = 60;
+        countdown = 120;
     }
 
     function updateCountdown() {
