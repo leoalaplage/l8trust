@@ -23,7 +23,7 @@
             color: #FFFF00;
             text-shadow: 2px 2px #FF00FF;
         }
-        #market-status, #major-indices, #rss-feed, #stock-ticker {
+        #market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance {
             border: 2px solid #00FF00;
             padding: 10px;
             margin-top: 20px;
@@ -94,6 +94,14 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(-100%, 0); }
         }
+        #sector-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        #sector-list div {
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +115,10 @@
                 <span id="qqq-performance">Nasdaq 100: -2.33%</span> |
                 <span id="dia-performance">Dow Jones: 0.18%</span>
             </p>
+        </div>
+        <div id="sector-performance">
+            <h3>Sector Performance</h3>
+            <div id="sector-list"></div>
         </div>
         <div id="stock-ticker">
             <div id="ticker-content"></div>
@@ -244,6 +256,44 @@
         }
     }
 
+    async function fetchSectorPerformance() {
+        const sectors = [
+            { symbol: 'XLK', name: 'Technology' },
+            { symbol: 'XLV', name: 'Healthcare' },
+            { symbol: 'XLF', name: 'Financials' },
+            { symbol: 'XLE', name: 'Energy' },
+            { symbol: 'XLY', name: 'Consumer Discretionary' },
+            { symbol: 'XLP', name: 'Consumer Staples' },
+            { symbol: 'XLI', name: 'Industrials' },
+            { symbol: 'XLB', name: 'Materials' },
+            { symbol: 'XLU', name: 'Utilities' },
+            { symbol: 'XLRE', name: 'Real Estate' }
+        ];
+
+        const sectorList = document.getElementById('sector-list');
+        sectorList.innerHTML = '';
+
+        for (const sector of sectors) {
+            try {
+                const { symbol, name } = sector;
+                const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
+                const colorClass = parseFloat(changePercent) >= 0 ? 'positive-change' : 'negative-change';
+                
+                sectorList.innerHTML += `
+                    <div>
+                        ${name}: <span class="${colorClass}">${changePercent}%</span>
+                    </div>
+                `;
+            } catch (error) {
+                console.error(`Error fetching data for ${sector.name}:`, error);
+                sectorList.innerHTML += `<div>${sector.name}: Error fetching data</div>`;
+            }
+        }
+    }
+
     function refreshAllData() {
         fetchMarketStatus();
         displayIndexPerformance('SPY', 'spy-performance', 'S&P 500');
@@ -251,6 +301,7 @@
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
         loadRSSFeed();
+        fetchSectorPerformance();
         countdown = 120;
     }
 
