@@ -136,10 +136,77 @@
             padding: 5px;
             cursor: pointer;
         }
+        
+        #stock-search button:hover {
+            background-color: #003300;
+        }    
+#market-status-corner {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000000;
+    border: 2px solid #00FF00;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+#chart-line {
+    stroke: #00FF00;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.blinking {
+    animation: blink 1s linear infinite;
+}
+#sector-performance {
+    border: 2px solid #00FF00;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #000000;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+#load-sectors {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#load-sectors:hover {
+    background-color: #003300;
+}
+
+#load-sectors:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#sector-title {
+    color: #FF00FF;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: underline;
+}
     </style>
 </head>
 <body>
     <div class="container">
+        <div id="market-status-corner">
+  <svg width="30" height="30" viewBox="0 0 30 30">
+    <polyline id="chart-line" points="5,25 10,15 15,20 20,10 25,5" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
         <div id="utc-clock"></div>
         <h1 class="blink">L8TRUST</h1>
         <div id="market-status"></div>
@@ -160,10 +227,11 @@
         <button onclick="resetSearch()">Reset</button>
     </div>
         <div id="stock-info"></div>
-        <div id="sector-performance">
-            <h3>Sector Performance</h3>
-            <div id="sector-chart"></div>
-        </div>
+       <div id="sector-performance">
+    <button id="load-sectors">Load Sector Performance</button>
+    <h3 id="sector-title" style="display: none;">Sector Performance</h3>
+    <div id="sector-chart"></div>
+</div>
         
         <div id="rss-feed">
             <h3>Latest News</h3>
@@ -225,24 +293,30 @@
         return `${changePercent}%`;
     }
 
-    async function displayIndexPerformance(symbol, elementId, indexName) {
-        const performanceElement = document.getElementById(elementId);
-        try {
-            const changePercent = await fetchIndexPerformance(symbol);
-            if (performanceElement) {
-                const spanElement = document.createElement('span');
-                spanElement.textContent = changePercent;
-                spanElement.className = parseFloat(changePercent) > 0 ? 'positive-change' : 'negative-change';
-                performanceElement.innerHTML = `${indexName}: `;
-                performanceElement.appendChild(spanElement);
-            }
-        } catch (error) {
-            console.error(`Error displaying ${indexName} performance:`, error);
-            if (performanceElement) {
-                performanceElement.textContent = `Error displaying ${indexName} performance.`;
-            }
+async function displayIndexPerformance(symbol, elementId, indexName) {
+    const performanceElement = document.getElementById(elementId);
+    try {
+        const changePercent = await fetchIndexPerformance(symbol);
+        if (performanceElement) {
+            const spanElement = document.createElement('span');
+            const numericChange = parseFloat(changePercent);
+            spanElement.textContent = `${numericChange >= 0 ? '+' : ''}${changePercent}`;
+            const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500'; // Brighter green and orange-red
+            spanElement.style.backgroundColor = changeColor;
+            spanElement.style.color = 'black';
+            spanElement.style.padding = '2px 5px';
+            spanElement.style.borderRadius = '3px';
+            spanElement.style.fontWeight = 'bold';
+            performanceElement.innerHTML = `${indexName}: `;
+            performanceElement.appendChild(spanElement);
+        }
+    } catch (error) {
+        console.error(`Error displaying ${indexName} performance:`, error);
+        if (performanceElement) {
+            performanceElement.textContent = `Error displaying ${indexName} performance.`;
         }
     }
+}
 
     async function loadRSSFeed() {
         const rssUrl = 'https://breakingthenews.net/news-feed.xml';
@@ -282,21 +356,50 @@
         return { symbol, price: data.c.toFixed(2), changePercent };
     }
 
-    async function updateStockTicker() {
-        const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA', 'AVGO', 'JPM', 'WMT', 'V', 'XOM', 'UNH', 'NVO', 'MA', 'PG', 'ORCL', 'JNJ', 'COST', 'HD', 'ASML', 'BAC', 'MRK', 'ABBV', 'CVX', 'KO', 'NFLX'];
-        const tickerContent = document.getElementById('ticker-content');
-        tickerContent.innerHTML = '';
+async function updateStockTicker() {
+    const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA', 'AVGO', 'JPM', 'WMT', 'V', 'XOM', 'UNH', 'NVO', 'MA', 'PG', 'ORCL', 'JNJ', 'COST', 'HD', 'ASML', 'BAC', 'MRK', 'ABBV', 'CVX', 'KO', 'NFLX'];
+    const tickerContent = document.getElementById('ticker-content');
+    tickerContent.innerHTML = '';
 
-        for (const stock of stocks) {
-            try {
-                const { symbol, price, changePercent } = await fetchStockData(stock);
-                const colorClass = parseFloat(changePercent) >= 0 ? 'positive-change' : 'negative-change';
-                tickerContent.innerHTML += `<span>${symbol}: $${price} <span class="${colorClass}">${changePercent}%</span></span>`;
-            } catch (error) {
-                console.error(`Error fetching data for ${stock}:`, error);
-            }
+    for (const stock of stocks) {
+        try {
+            const { symbol, price, changePercent } = await fetchStockData(stock);
+            const numericChange = parseFloat(changePercent);
+            const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500'; // Brighter green and orange-red
+            const changeSign = numericChange >= 0 ? '+' : '';
+            
+            tickerContent.innerHTML += `
+                <span>${symbol}: $${price} 
+                    <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
+                        ${changeSign}${changePercent}%
+                    </span>
+                </span>
+            `;
+        } catch (error) {
+            console.error(`Error fetching data for ${stock}:`, error);
         }
     }
+}
+async function handleSectorPerformanceLoad() {
+    const button = document.getElementById('load-sectors');
+    const chartContainer = document.getElementById('sector-chart');
+    const sectorTitle = document.getElementById('sector-title');
+    
+    button.disabled = true;
+    button.textContent = 'Loading...';
+    chartContainer.innerHTML = 'Fetching sector performance data...';
+    
+    try {
+        await fetchSectorPerformance();
+        button.style.display = 'none';  // Hide the button after successful load
+        sectorTitle.style.display = 'block';  // Show the title
+    } catch (error) {
+        console.error('Error loading sector performance:', error);
+        chartContainer.innerHTML = 'Error loading sector performance. Please try again.';
+        button.disabled = false;
+        button.textContent = 'Retry Loading Sector Performance';
+    }
+}
 
     function updateSectorChart(sectorData) {
         const chartContainer = document.getElementById('sector-chart');
@@ -410,6 +513,44 @@ async function searchStock() {
         stockInfoElement.innerHTML = 'Error fetching stock data. Please try again.';
     }
 }
+function displayMarketStatus(statusData) {
+    const marketStatusElement = document.getElementById('market-status');
+    const marketStatusCornerElement = document.getElementById('market-status-corner');
+    const chartLine = document.getElementById('chart-line');
+    const nyseStatus = statusData.exchanges.nyse;
+    const nasdaqStatus = statusData.exchanges.nasdaq;
+
+    const nyseColorClass = (nyseStatus === 'open') 
+        ? 'market-open' 
+        : (nyseStatus === 'extended-hours') 
+        ? 'market-extended' 
+        : 'market-closed';
+
+    const nasdaqColorClass = (nasdaqStatus === 'open') 
+        ? 'market-open' 
+        : (nasdaqStatus === 'extended-hours') 
+        ? 'market-extended' 
+        : 'market-closed';
+
+    marketStatusElement.innerHTML = `NYSE: 
+        <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
+        <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
+
+    // Update the corner status
+    const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
+    const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
+    
+    if (isOpen) {
+        chartLine.style.stroke = '#00FF00'; // Bright green for open
+        marketStatusCornerElement.classList.add('blinking');
+    } else if (isExtended) {
+        chartLine.style.stroke = '#FFA500'; // Orange for extended hours
+        marketStatusCornerElement.classList.remove('blinking');
+    } else {
+        chartLine.style.stroke = '#FF0000'; // Red for closed
+        marketStatusCornerElement.classList.remove('blinking');
+    }
+}
 
     function updateUTCClock() {
         const now = new Date();
@@ -424,7 +565,6 @@ async function searchStock() {
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
         loadRSSFeed();
-        fetchSectorPerformance();
         updateUTCClock();
         countdown = 120;
     }
@@ -442,7 +582,8 @@ async function searchStock() {
         refreshAllData();
         setInterval(updateCountdown, 1000);
         setInterval(updateUTCClock, 1000);
-    });
+    document.getElementById('load-sectors').addEventListener('click', handleSectorPerformanceLoad);
+});
     
     function resetSearch() {
         document.getElementById('stock-symbol').value = '';
