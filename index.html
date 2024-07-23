@@ -306,6 +306,21 @@
 .post-comment:hover {
     background-color: #003300;
 }
+#flights-button {
+    display: block;
+    margin: 10px auto;
+    padding: 5px 10px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    cursor: pointer;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+}
+
+#flights-button:hover {
+    background-color: #003300;
+}
     </style>
 </head>
 <body>
@@ -318,6 +333,7 @@
 
 </div>
         <div id="utc-clock"></div>
+        <button id="flights-button" onclick="goToFlights()">Flights</button>
         <h1 class="blink">L8TRUST</h1>
         <div id="market-status"></div>
         <div id="major-indices">
@@ -878,6 +894,9 @@ function createCommentElement(text) {
 
             updateTrafficLight(status);
         }
+        function goToFlights() {
+    window.location.href = 'flights.html';
+}
     </script>
 </body>
 </html>
