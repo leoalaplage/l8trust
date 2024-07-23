@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L8TRUST - Flights</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #000080;
+            color: #00FF00;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            color: #FFFF00;
+            text-shadow: 2px 2px #FF00FF;
+        }
+        #flight-info {
+            border: 2px solid #00FF00;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #000000;
+        }
+        #back-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #000000;
+            color: #00FF00;
+            border: 1px solid #00FF00;
+            cursor: pointer;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 16px;
+        }
+        #back-button:hover {
+            background-color: #003300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>L8TRUST - Flights</h1>
+        <div id="flight-info">
+            <p>Flight information will be displayed here.</p>
+        </div>
+        <button id="back-button" onclick="goBack()">Back to Main Page</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        // Add any flight-related JavaScript functions here
+    </script>
+</body>
+</html>
