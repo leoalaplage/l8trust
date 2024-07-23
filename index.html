@@ -125,8 +125,17 @@
         #stock-search {
             margin-top: 20px;
             text-align: center;
+            cursor: text;
         }
-        #stock-search input,
+        #stock-search input {
+            font-family: "Courier New", Courier, monospace; /* Matching font */
+            font-size: 16px;
+            background-color: #000000;
+            color: #00FF00;
+            border: 1px solid #00FF00;
+            padding: 5px;
+            cursor: text;
+        }
         #stock-search button {
             font-family: "Courier New", Courier, monospace; /* Matching font */
             font-size: 16px;
@@ -141,29 +150,34 @@
             background-color: #003300;
         }    
 #market-status-corner {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #000000;
-    border: 2px solid #00FF00;
-    padding: 5px;
-    border-radius: 5px;
-    z-index: 1000;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #000;
+  border: 2px solid #00FF00;
+  padding: 2px;
 }
 
-#chart-line {
-    stroke: #00FF00;
+.pixel-traffic-light {
+  display: grid;
+  grid-template-columns: repeat(5, 6px);
+  grid-template-rows: repeat(7, 6px);
+  gap: 1px;
 }
 
-@keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+.pixel {
+  width: 6px;
+  height: 6px;
+  background-color: #333; /* Default off color */
 }
 
-.blinking {
-    animation: blink 1s linear infinite;
+.pixel.on {
+  background-color: #000; /* Will be overridden for actual lights */
 }
+
+.pixel.red.on { background-color: #FF0000; }
+.pixel.yellow.on { background-color: #FFFF00; }
+.pixel.green.on { background-color: #00FF00; }
 #sector-performance {
     margin-top: 20px;
     text-align: center;
@@ -297,9 +311,11 @@
 <body>
     <div class="container">
         <div id="market-status-corner">
-  <svg width="30" height="30" viewBox="0 0 30 30">
-    <polyline id="chart-line" points="5,25 10,15 15,20 20,10 25,5" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+            <div class="pixel-traffic-light">
+                <!-- 5x7 grid of pixels will be created here by JavaScript -->
+            </div>
+
+
 </div>
         <div id="utc-clock"></div>
         <h1 class="blink">L8TRUST</h1>
@@ -740,16 +756,90 @@ function createCommentElement(text) {
 
 
     document.addEventListener('DOMContentLoaded', () => {
-        refreshAllData();
-        setInterval(updateCountdown, 1000);
-        setInterval(updateUTCClock, 1000);
-    document.getElementById('load-sectors').addEventListener('click', handleSectorPerformanceLoad);
-});
+            createPixelTrafficLight(); // Create the pixel traffic light
+            refreshAllData();
+            setInterval(updateCountdown, 1000);
+            setInterval(updateUTCClock, 1000);
+            document.getElementById('load-sectors').addEventListener('click', fetchSectorPerformance);
+        });
     
     function resetSearch() {
         document.getElementById('stock-symbol').value = '';
         document.getElementById('stock-info').innerHTML = '';
     }
+    function createPixelTrafficLight() {
+            const lightContainer = document.querySelector('.pixel-traffic-light');
+            const pixelStates = [
+                0,0,1,0,0,
+                0,1,1,1,0,
+                1,1,1,1,1,
+                1,1,1,1,1,
+                1,1,1,1,1,
+                0,1,1,1,0,
+                0,0,1,0,0
+            ];
+            
+            pixelStates.forEach((state, index) => {
+                const pixel = document.createElement('div');
+                pixel.className = `pixel ${state ? 'on' : ''}`;
+                if (index < 15) pixel.classList.add('red');
+                else if (index < 25) pixel.classList.add('yellow');
+                else pixel.classList.add('green');
+                lightContainer.appendChild(pixel);
+            });
+        }
+
+        function updateTrafficLight(status) {
+            const redPixels = document.querySelectorAll('.pixel.red');
+            const yellowPixels = document.querySelectorAll('.pixel.yellow');
+            const greenPixels = document.querySelectorAll('.pixel.green');
+            
+            [redPixels, yellowPixels, greenPixels].forEach(pixels => 
+                pixels.forEach(pixel => pixel.classList.remove('on'))
+            );
+
+            if (status === 'closed') {
+                redPixels.forEach(pixel => pixel.classList.add('on'));
+            } else if (status === 'extended') {
+                yellowPixels.forEach(pixel => pixel.classList.add('on'));
+            } else if (status === 'open') {
+                greenPixels.forEach(pixel => pixel.classList.add('on'));
+            }
+        }
+
+        // Modify your existing displayMarketStatus function
+        function displayMarketStatus(statusData) {
+            const marketStatusElement = document.getElementById('market-status');
+            const nyseStatus = statusData.exchanges.nyse;
+            const nasdaqStatus = statusData.exchanges.nasdaq;
+
+            const nyseColorClass = (nyseStatus === 'open') 
+                ? 'market-open' 
+                : (nyseStatus === 'extended-hours') 
+                ? 'market-extended' 
+                : 'market-closed';
+
+            const nasdaqColorClass = (nasdaqStatus === 'open') 
+                ? 'market-open' 
+                : (nasdaqStatus === 'extended-hours') 
+                ? 'market-extended' 
+                : 'market-closed';
+
+            marketStatusElement.innerHTML = `NYSE: 
+                <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
+                <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
+
+            // Update the traffic light
+            const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
+            const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
+            
+            let status;
+            if (isOpen) status = 'open';
+            else if (isExtended) status = 'extended';
+            else status = 'closed';
+
+            updateTrafficLight(status);
+        }
     </script>
 </body>
 </html>
