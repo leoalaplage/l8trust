@@ -165,38 +165,132 @@
     animation: blink 1s linear infinite;
 }
 #sector-performance {
-    border: 2px solid #00FF00;
-    padding: 20px;
     margin-top: 20px;
-    background-color: #000000;
-    width: 100%;
-    box-sizing: border-box;
     text-align: center;
 }
+
 #load-sectors {
     font-family: "Courier New", Courier, monospace;
     font-size: 16px;
     background-color: #000000;
     color: #00FF00;
     border: 1px solid #00FF00;
-    padding: 10px 20px;
+    padding: 5px 10px;
     cursor: pointer;
-    display: inline-block;
 }
 
 #load-sectors:hover {
     background-color: #003300;
 }
 
-#load-sectors:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+#sector-chart {
+    border: 2px solid #00FF00;
+    padding: 20px;
+    margin-top: 10px;
+    background-color: #000000;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 #sector-title {
     color: #FF00FF;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 0;
+    margin-bottom: 20px;
     text-decoration: underline;
+}
+#blog-section {
+    border: 2px solid #00FF00;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #000000;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#blog-section h3 {
+    color: #FF00FF;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: underline;
+}
+
+.blog-post {
+    border-bottom: 1px solid #00FF00;
+    padding: 15px 0;
+}
+
+.blog-post:last-child {
+    border-bottom: none;
+}
+
+.blog-post h4 {
+    color: #FFFF00;
+    margin-bottom: 5px;
+}
+
+.blog-date {
+    color: #888888;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.blog-excerpt {
+    margin-bottom: 10px;
+}
+
+.read-more {
+    color: #00FF00;
+    text-decoration: none;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+.comment-section {
+    margin-top: 15px;
+    border-top: 1px solid #00FF00;
+    padding-top: 15px;
+}
+
+.comment-section h5 {
+    color: #FFFF00;
+    margin-bottom: 10px;
+}
+
+.comments {
+    margin-bottom: 10px;
+}
+
+.comment {
+    background-color: #001100;
+    border: 1px solid #00FF00;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.comment-input {
+    width: 100%;
+    height: 60px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px;
+    margin-bottom: 10px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.post-comment {
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.post-comment:hover {
+    background-color: #003300;
 }
     </style>
 </head>
@@ -227,16 +321,41 @@
         <button onclick="resetSearch()">Reset</button>
     </div>
         <div id="stock-info"></div>
-       <div id="sector-performance">
+<div id="sector-performance">
     <button id="load-sectors">Load Sector Performance</button>
-    <h3 id="sector-title" style="display: none;">Sector Performance</h3>
-    <div id="sector-chart"></div>
+    <div id="sector-chart" style="display: none;">
+        <h3 id="sector-title">Sector Performance</h3>
+        <!-- Sector data will be loaded here -->
+    </div>
+
 </div>
         
         <div id="rss-feed">
             <h3>Latest News</h3>
             <ul id="news-list"></ul>
         </div>
+<div id="blog-section">
+    <h3>Latest Blog Posts</h3>
+    
+<div id="blog-posts">
+<div class="blog-post">
+        <h4>Market Analysis: Q2 2024</h4>
+        <p class="blog-date">July 23, 2024</p>
+        <p class="blog-excerpt">In-depth analysis of market trends and predictions for the second quarter of 2024...</p>
+
+    </div>
+    <div class="blog-post">
+        <h4>Petit message caché pour Loulou</h4>
+        <p class="blog-date">July 23, 2024</p>
+        <p class="blog-excerpt">Je t'aime très très fort <3</p>
+    </div>
+    <div class="blog-post">
+        <h4>Understanding Market Volatility</h4>
+        <p class="blog-date">July 23, 2024</p>
+        <p class="blog-excerpt">A beginner's guide to understanding and navigating market volatility...</p>
+    </div>
+</div>    </div>
+</div>        
         <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
     </div>
 
@@ -380,26 +499,31 @@ async function updateStockTicker() {
         }
     }
 }
-async function handleSectorPerformanceLoad() {
-    const button = document.getElementById('load-sectors');
-    const chartContainer = document.getElementById('sector-chart');
-    const sectorTitle = document.getElementById('sector-title');
-    
-    button.disabled = true;
-    button.textContent = 'Loading...';
-    chartContainer.innerHTML = 'Fetching sector performance data...';
-    
-    try {
-        await fetchSectorPerformance();
-        button.style.display = 'none';  // Hide the button after successful load
-        sectorTitle.style.display = 'block';  // Show the title
-    } catch (error) {
-        console.error('Error loading sector performance:', error);
-        chartContainer.innerHTML = 'Error loading sector performance. Please try again.';
-        button.disabled = false;
-        button.textContent = 'Retry Loading Sector Performance';
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const loadButton = document.getElementById('load-sectors');
+    const sectorChart = document.getElementById('sector-chart');
+
+    loadButton.addEventListener('click', async () => {
+        if (sectorChart.style.display === 'none') {
+            loadButton.disabled = true;
+            loadButton.textContent = 'Loading...';
+            sectorChart.style.display = 'block';
+            try {
+                await fetchSectorPerformance();
+                loadButton.textContent = 'Hide Sector Performance';
+            } catch (error) {
+                console.error('Error loading sector performance:', error);
+                sectorChart.innerHTML = 'Error loading sector performance. Please try again.';
+            }
+            loadButton.disabled = false;
+        } else {
+            sectorChart.style.display = 'none';
+            loadButton.textContent = 'Load Sector Performance';
+        }
+    });
+});
+
+// Keep your existing fetchSectorPerformance() function
 
     function updateSectorChart(sectorData) {
         const chartContainer = document.getElementById('sector-chart');
@@ -576,6 +700,43 @@ function displayMarketStatus(statusData) {
             refreshAllData();
         }
     }
+document.addEventListener('DOMContentLoaded', () => {
+    const blogPosts = document.querySelectorAll('.blog-post');
+    
+    blogPosts.forEach((post, index) => {
+        const commentSection = post.querySelector('.comment-section');
+        const commentsContainer = commentSection.querySelector('.comments');
+        const commentInput = commentSection.querySelector('.comment-input');
+        const postButton = commentSection.querySelector('.post-comment');
+        
+        // Load existing comments
+        const existingComments = JSON.parse(localStorage.getItem(`comments_${index}`)) || [];
+        existingComments.forEach(comment => {
+            const commentElement = createCommentElement(comment);
+            commentsContainer.appendChild(commentElement);
+        });
+        
+        postButton.addEventListener('click', () => {
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                const commentElement = createCommentElement(commentText);
+                commentsContainer.appendChild(commentElement);
+                commentInput.value = '';
+                
+                // Save to local storage
+                existingComments.push(commentText);
+                localStorage.setItem(`comments_${index}`, JSON.stringify(existingComments));
+            }
+        });
+    });
+});
+
+function createCommentElement(text) {
+    const commentElement = document.createElement('div');
+    commentElement.className = 'comment';
+    commentElement.textContent = text;
+    return commentElement;
+}
 
 
     document.addEventListener('DOMContentLoaded', () => {
