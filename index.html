@@ -4,458 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L8TRUST</title>
-    <style>
-        body {
-            font-family: "Courier New", Courier, monospace;
-            background-color: #000080;
-            color: #00FF00;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 40px;
-            color: #FFFF00;
-            text-shadow: 2px 2px #FF00FF;
-        }
-        #market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info {
-            border: 2px solid #00FF00;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #000000;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        #market-status {
-            text-align: center;
-        }
-        h3 {
-            color: #FF00FF;
-            text-align: center;
-            margin-top: 10px;
-            text-decoration: underline;
-        }
-        .positive-change { color: #00FF00; }
-        .negative-change { color: #FF0000; }
-        .market-open { color: #00FF00; }
-        .market-extended { color: #FFA500; }
-        .market-closed { color: #FF0000; }
-        .blink {
-            animation: blinker 1s linear infinite;
-        }
-        @keyframes blinker {
-            50% { opacity: 0; }
-        }
-        #refresh-info {
-            text-align: center;
-            font-size: 14px;
-            margin-top: 20px;
-            color: #FFFFFF;
-        }
-        #news-list {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        #news-list li {
-            margin-bottom: 10px;
-        }
-        #news-list a {
-            color: #00FF00;
-            text-decoration: none;
-        }
-        #news-list a:hover {
-            text-decoration: underline;
-        }
-        #major-indices {
-            text-align: center;
-        }
-        #stock-ticker {
-            overflow: hidden;
-            padding: 10px 0;
-            white-space: nowrap;
-        }
-        #ticker-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 50s linear infinite;
-        }
-        #ticker-content:hover {
-            animation-play-state: paused;
-        }
-        #ticker-content span {
-            margin-right: 40px;
-        }
-        @keyframes ticker {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
-        #sector-chart {
-            width: 100%;
-            margin-top: 20px;
-        }
-        .sector-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .sector-name {
-            width: 150px;
-            text-align: right;
-            padding-right: 10px;
-        }
-        .bar {
-            height: 20px;
-            transition: width 0.5s ease-in-out;
-        }
-        .performance-value {
-            margin-left: 5px;
-        }
-        #utc-clock {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 14px;
-            color: #00FF00;
-        }
-        #stock-search {
-            margin-top: 20px;
-            text-align: center;
-            cursor: text;
-        }
-        #stock-search input {
-            font-family: "Courier New", Courier, monospace; /* Matching font */
-            font-size: 16px;
-            background-color: #000000;
-            color: #00FF00;
-            border: 1px solid #00FF00;
-            padding: 5px;
-            cursor: text;
-        }
-        #stock-search button {
-            font-family: "Courier New", Courier, monospace; /* Matching font */
-            font-size: 16px;
-            background-color: #000000;
-            color: #00FF00;
-            border: 1px solid #00FF00;
-            padding: 5px;
-            cursor: pointer;
-        }
-        
-        #stock-search button:hover {
-            background-color: #003300;
-        }    
-#market-status-corner {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #000;
-  border: 2px solid #00FF00;
-  padding: 2px;
-}
-
-.pixel-traffic-light {
-  display: grid;
-  grid-template-columns: repeat(5, 6px);
-  grid-template-rows: repeat(7, 6px);
-  gap: 1px;
-}
-
-.pixel {
-  width: 6px;
-  height: 6px;
-  background-color: #333; /* Default off color */
-}
-
-.pixel.on {
-  background-color: #000; /* Will be overridden for actual lights */
-}
-
-.pixel.red.on { background-color: #FF0000; }
-.pixel.yellow.on { background-color: #FFFF00; }
-.pixel.green.on { background-color: #00FF00; }
-#sector-performance {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#load-sectors {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-#load-sectors:hover {
-    background-color: #003300;
-}
-
-#sector-chart {
-    border: 2px solid #00FF00;
-    padding: 20px;
-    margin-top: 10px;
-    background-color: #000000;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#sector-title {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-decoration: underline;
-}
-#blog-section {
-    border: 2px solid #00FF00;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #000000;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#blog-section h3 {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 10px;
-    text-decoration: underline;
-}
-
-.blog-post {
-    border-bottom: 1px solid #00FF00;
-    padding: 15px 0;
-}
-
-.blog-post:last-child {
-    border-bottom: none;
-}
-
-.blog-post h4 {
-    color: #FFFF00;
-    margin-bottom: 5px;
-}
-
-.blog-date {
-    color: #888888;
-    font-size: 0.9em;
-    margin-bottom: 10px;
-}
-
-.blog-excerpt {
-    margin-bottom: 10px;
-}
-
-.read-more {
-    color: #00FF00;
-    text-decoration: none;
-}
-
-.read-more:hover {
-    text-decoration: underline;
-}
-.comment-section {
-    margin-top: 15px;
-    border-top: 1px solid #00FF00;
-    padding-top: 15px;
-}
-
-.comment-section h5 {
-    color: #FFFF00;
-    margin-bottom: 10px;
-}
-
-.comments {
-    margin-bottom: 10px;
-}
-
-.comment {
-    background-color: #001100;
-    border: 1px solid #00FF00;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.comment-input {
-    width: 100%;
-    height: 60px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px;
-    margin-bottom: 10px;
-    font-family: "Courier New", Courier, monospace;
-}
-
-.post-comment {
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-family: "Courier New", Courier, monospace;
-}
-
-.post-comment:hover {
-    background-color: #003300;
-}
-#flights-button {
-    display: block;
-    position: absolute;
-            top: 25px;
-            right: 10px;
-    margin: 10px auto;
-    padding: 5px 10px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    cursor: pointer;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-}
-
-#flights-button:hover {
-    background-color: #003300;
-    position: absolute;
-            top: 25px;
-            right: 10px;
-}
-#berkshire-investments {
-    border: 2px solid #00FF00;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #000000;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#berkshire-investments h3 {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 10px;
-    text-decoration: underline;
-}
-
-.berkshire-entry {
-    margin-bottom: 15px;
-    border-bottom: 1px solid #00FF00;
-    padding-bottom: 10px;
-}
-
-.berkshire-entry:last-child {
-    border-bottom: none;
-}
-
-.berkshire-entry h4 {
-    margin-bottom: 5px;
-}
-
-.berkshire-entry a {
-    color: #00FF00;
-    text-decoration: none;
-}
-
-.berkshire-entry a:hover {
-    text-decoration: underline;
-}
-
-.filing-date {
-    color: #888888;
-    font-size: 0.9em;
-}
-    </style>
+<style>
+    body {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #000080;
+        color: #00FF00;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 40px;
+        color: #FFFF00;
+        text-shadow: 2px 2px #FF00FF;
+    }
+    #market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #berkshire-investments {
+        border: 2px solid #00FF00;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #000000;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    #market-status {
+        text-align: center;
+    }
+    h3 {
+        color: #FF00FF;
+        text-align: center;
+        margin-top: 10px;
+        text-decoration: underline;
+    }
+    .market-open { color: #00FF00; }
+    .market-extended { color: #FFA500; }
+    .market-closed { color: #FF0000; }
+    .blink {
+        animation: blinker 1s linear infinite;
+    }
+    @keyframes blinker {
+        50% { opacity: 0; }
+    }
+    #refresh-info {
+        text-align: center;
+        font-size: 14px;
+        margin-top: 20px;
+        color: #FFFFFF;
+    }
+    #news-list {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+    #news-list li {
+        margin-bottom: 10px;
+    }
+    #news-list a {
+        color: #00FF00;
+        text-decoration: none;
+    }
+    #news-list a:hover {
+        text-decoration: underline;
+    }
+    #major-indices {
+        text-align: center;
+    }
+    #stock-ticker {
+        overflow: hidden;
+        padding: 10px 0;
+        white-space: nowrap;
+    }
+    #ticker-content {
+        display: inline-block;
+        padding-left: 100%;
+        animation: ticker 50s linear infinite;
+    }
+    #ticker-content:hover {
+        animation-play-state: paused;
+    }
+    #ticker-content span {
+        margin-right: 40px;
+    }
+    @keyframes ticker {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(-100%, 0); }
+    }
+    .sector-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    .sector-name {
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+    }
+    .bar {
+        height: 20px;
+        transition: width 0.5s ease-in-out;
+    }
+    .performance-value {
+        margin-left: 5px;
+    }
+    #utc-clock {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 14px;
+        color: #00FF00;
+    }
+    #stock-search {
+        margin-top: 20px;
+        text-align: center;
+    }
+    #stock-search input, #stock-search button, #load-sectors {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 16px;
+        background-color: #000000;
+        color: #00FF00;
+        border: 1px solid #00FF00;
+        padding: 5px;
+    }
+    #stock-search button, #load-sectors {
+        cursor: pointer;
+    }
+    #stock-search button:hover, #load-sectors:hover {
+        background-color: #003300;
+    }
+    #market-status-corner {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #000;
+        border: 2px solid #00FF00;
+        padding: 2px;
+    }
+    .pixel-traffic-light {
+        display: grid;
+        grid-template-columns: repeat(5, 6px);
+        grid-template-rows: repeat(7, 6px);
+        gap: 1px;
+    }
+    .pixel {
+        width: 6px;
+        height: 6px;
+        background-color: #333;
+    }
+    .pixel.on {
+        background-color: #000;
+    }
+    .pixel.red.on { background-color: #FF0000; }
+    .pixel.yellow.on { background-color: #FFFF00; }
+    .pixel.green.on { background-color: #00FF00; }
+    #sector-performance {
+        margin-top: 20px;
+        text-align: center;
+    }
+    #sector-title {
+        color: #FF00FF;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-decoration: underline;
+    }
+    #berkshire-form4-button {
+        display: block;
+        position: absolute;
+        top: 25px;
+        right: 10px;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background-color: #000000;
+        color: #00FF00;
+        border: 1px solid #00FF00;
+        cursor: pointer;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 16px;
+    }
+    #berkshire-form4-button:hover {
+        background-color: #003300;
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div id="market-status-corner">
-            <div class="pixel-traffic-light">
-                <!-- 5x7 grid of pixels will be created here by JavaScript -->
-            </div>
-
-
-</div>
-        <div id="utc-clock"></div>
-        <button id="flights-button" onclick="goToFlights()">Flights</button>
-        <h1 class="blink">L8TRUST</h1>
-        <div id="market-status"></div>
-        <div id="major-indices">
-            <h3>Major Indices</h3>
-            <p>
-                <span id="spy-performance">S&P 500: -1.12%</span> |
-                <span id="qqq-performance">Nasdaq 100: -2.33%</span> |
-                <span id="dia-performance">Dow Jones: 0.18%</span>
-            </p>
+<div class="container">
+    <div id="market-status-corner">
+        <div class="pixel-traffic-light">
+            <!-- 5x7 grid of pixels will be created here by JavaScript -->
         </div>
-        <div id="stock-ticker">
-            <div id="ticker-content"></div>
-        </div>
-        <div id="stock-search">
+    </div>
+    <div id="utc-clock"></div>
+    <button id="berkshire-form4-button">Latest Berkshire Form 4</button>
+    <h1 class="blink">L8TRUST</h1>
+    <div id="market-status"></div>
+    <div id="major-indices">
+        <h3>Major Indices</h3>
+        <p>
+            <span id="spy-performance">S&P 500: -1.12%</span> |
+            <span id="qqq-performance">Nasdaq 100: -2.33%</span> |
+            <span id="dia-performance">Dow Jones: 0.18%</span>
+        </p>
+    </div>
+    <div id="stock-ticker">
+        <div id="ticker-content"></div>
+    </div>
+    <div id="stock-search">
         <input type="text" id="stock-symbol" placeholder="Enter stock symbol">
         <button onclick="searchStock()">Search</button>
         <button onclick="resetSearch()">Reset</button>
     </div>
-        <div id="stock-info"></div>
-<div id="sector-performance">
-    <button id="load-sectors">Load Sector Performance</button>
-    <div id="sector-chart" style="display: none;">
-        <h3 id="sector-title">Sector Performance</h3>
-        <!-- Sector data will be loaded here -->
-    </div>
-
-</div>
-        
-        <div id="rss-feed">
-            <h3>Latest News</h3>
-            <ul id="news-list"></ul>
+    <div id="stock-info"></div>
+    <div id="sector-performance">
+        <button id="load-sectors">Load Sector Performance</button>
+        <div id="sector-chart" style="display: none;">
+            <h3 id="sector-title">Sector Performance</h3>
+            <!-- Sector data will be loaded here -->
         </div>
-<div id="berkshire-investments">
-    <h3>Latest Berkshire Hathaway Investments</h3>
-    <div id="berkshire-feed"></div>
-</div>       
-        <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
     </div>
-
-    <script>
-    async function loadBerkshireInvestments() {
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-    const edgarUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=&dateb=&owner=include&start=0&count=10&output=atom';
-    const fullUrl = proxyUrl + encodeURIComponent(edgarUrl);
-
-    try {
-        const response = await fetch(fullUrl);
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-        
-        const entries = xmlDoc.querySelectorAll('entry');
-        const berkshireFeed = document.getElementById('berkshire-feed');
-        berkshireFeed.innerHTML = '';
-        
-        entries.forEach(entry => {
-            const title = entry.querySelector('title').textContent;
-            const link = entry.querySelector('link').getAttribute('href');
-            const date = new Date(entry.querySelector('updated').textContent);
-            
-            const entryElement = document.createElement('div');
-            entryElement.className = 'berkshire-entry';
-            entryElement.innerHTML = `
-                <h4><a href="${link}" target="_blank">${title}</a></h4>
-                <p class="filing-date">Filed on: ${date.toLocaleDateString()}</p>
-            `;
-            berkshireFeed.appendChild(entryElement);
-        });
-    } catch (error) {
-        console.error('Error fetching Berkshire investments:', error);
-        document.getElementById('berkshire-feed').innerHTML = '<p>Error loading Berkshire investment data. Please try again later.</p>';
-    }
-}
+    <div id="rss-feed">
+        <h3>Latest News</h3>
+        <ul id="news-list"></ul>
+    </div>
+    <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
+</div>
+<script>
     const apiKey = 'cha3cg1r01qhe0r9rhg0cha3cg1r01qhe0r9rhgg';
     const marketStatusApiKey = 'NQpPDWBnyk3zbab7leFzAavOzTnNpWjY';
     let countdown = 120;
@@ -498,6 +273,11 @@
         marketStatusElement.innerHTML = `NYSE: 
             <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
             <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
+
+        const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
+        const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
+        
+        updateTrafficLight(isOpen ? 'open' : (isExtended ? 'extended' : 'closed'));
     }
 
     async function fetchIndexPerformance(symbol) {
@@ -508,30 +288,30 @@
         return `${changePercent}%`;
     }
 
-async function displayIndexPerformance(symbol, elementId, indexName) {
-    const performanceElement = document.getElementById(elementId);
-    try {
-        const changePercent = await fetchIndexPerformance(symbol);
-        if (performanceElement) {
-            const spanElement = document.createElement('span');
-            const numericChange = parseFloat(changePercent);
-            spanElement.textContent = `${numericChange >= 0 ? '+' : ''}${changePercent}`;
-            const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500'; // Brighter green and orange-red
-            spanElement.style.backgroundColor = changeColor;
-            spanElement.style.color = 'black';
-            spanElement.style.padding = '2px 5px';
-            spanElement.style.borderRadius = '3px';
-            spanElement.style.fontWeight = 'bold';
-            performanceElement.innerHTML = `${indexName}: `;
-            performanceElement.appendChild(spanElement);
-        }
-    } catch (error) {
-        console.error(`Error displaying ${indexName} performance:`, error);
-        if (performanceElement) {
-            performanceElement.textContent = `Error displaying ${indexName} performance.`;
+    async function displayIndexPerformance(symbol, elementId, indexName) {
+        const performanceElement = document.getElementById(elementId);
+        try {
+            const changePercent = await fetchIndexPerformance(symbol);
+            if (performanceElement) {
+                const spanElement = document.createElement('span');
+                const numericChange = parseFloat(changePercent);
+                spanElement.textContent = `${numericChange >= 0 ? '+' : ''}${changePercent}`;
+                const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500';
+                spanElement.style.backgroundColor = changeColor;
+                spanElement.style.color = 'black';
+                spanElement.style.padding = '2px 5px';
+                spanElement.style.borderRadius = '3px';
+                spanElement.style.fontWeight = 'bold';
+                performanceElement.innerHTML = `${indexName}: `;
+                performanceElement.appendChild(spanElement);
+            }
+        } catch (error) {
+            console.error(`Error displaying ${indexName} performance:`, error);
+            if (performanceElement) {
+                performanceElement.textContent = `Error displaying ${indexName} performance.`;
+            }
         }
     }
-}
 
     async function loadRSSFeed() {
         const rssUrl = 'https://breakingthenews.net/news-feed.xml';
@@ -571,91 +351,29 @@ async function displayIndexPerformance(symbol, elementId, indexName) {
         return { symbol, price: data.c.toFixed(2), changePercent };
     }
 
-async function updateStockTicker() {
-    const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA', 'AVGO', 'JPM', 'WMT', 'V', 'XOM', 'UNH', 'NVO', 'MA', 'PG', 'ORCL', 'JNJ', 'COST', 'HD', 'ASML', 'BAC', 'MRK', 'ABBV', 'CVX', 'KO', 'NFLX'];
-    const tickerContent = document.getElementById('ticker-content');
-    tickerContent.innerHTML = '';
+    async function updateStockTicker() {
+        const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA'];
+        const tickerContent = document.getElementById('ticker-content');
+        tickerContent.innerHTML = '';
 
-    for (const stock of stocks) {
-        try {
-            const { symbol, price, changePercent } = await fetchStockData(stock);
-            const numericChange = parseFloat(changePercent);
-            const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500'; // Brighter green and orange-red
-            const changeSign = numericChange >= 0 ? '+' : '';
-            
-            tickerContent.innerHTML += `
-                <span>${symbol}: $${price} 
-                    <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
-                        ${changeSign}${changePercent}%
-                    </span>
-                </span>
-            `;
-        } catch (error) {
-            console.error(`Error fetching data for ${stock}:`, error);
-        }
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    const loadButton = document.getElementById('load-sectors');
-    const sectorChart = document.getElementById('sector-chart');
-
-    loadButton.addEventListener('click', async () => {
-        if (sectorChart.style.display === 'none') {
-            loadButton.disabled = true;
-            loadButton.textContent = 'Loading...';
-            sectorChart.style.display = 'block';
+        for (const stock of stocks) {
             try {
-                await fetchSectorPerformance();
-                loadButton.textContent = 'Hide Sector Performance';
+                const { symbol, price, changePercent } = await fetchStockData(stock);
+                const numericChange = parseFloat(changePercent);
+                const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500';
+                const changeSign = numericChange >= 0 ? '+' : '';
+                
+                tickerContent.innerHTML += `
+                    <span>${symbol}: $${price} 
+                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
+                            ${changeSign}${changePercent}%
+                        </span>
+                    </span>
+                `;
             } catch (error) {
-                console.error('Error loading sector performance:', error);
-                sectorChart.innerHTML = 'Error loading sector performance. Please try again.';
+                console.error(`Error fetching data for ${stock}:`, error);
             }
-            loadButton.disabled = false;
-        } else {
-            sectorChart.style.display = 'none';
-            loadButton.textContent = 'Load Sector Performance';
         }
-    });
-});
-
-// Keep your existing fetchSectorPerformance() function
-
-    function updateSectorChart(sectorData) {
-        const chartContainer = document.getElementById('sector-chart');
-        chartContainer.innerHTML = '';
-
-        // Sort sectors by performance
-        sectorData.sort((a, b) => b.performance - a.performance);
-
-        // Find the maximum absolute performance for scaling
-        const maxPerformance = Math.max(...sectorData.map(s => Math.abs(s.performance)));
-
-        sectorData.forEach(sector => {
-            const sectorDiv = document.createElement('div');
-            sectorDiv.className = 'sector-bar';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'sector-name';
-            nameSpan.textContent = sector.name;
-
-            const barDiv = document.createElement('div');
-            barDiv.className = 'bar';
-            const width = Math.abs(sector.performance) / maxPerformance * 70; // 70% max width
-            barDiv.style.width = `${width}%`;
-            barDiv.style.backgroundColor = sector.performance >= 0 ? '#00FF00' : '#FF0000';
-
-            const valueSpan = document.createElement('span');
-            valueSpan.className = 'performance-value';
-            valueSpan.textContent = `${sector.performance > 0 ? '+' : ''}${sector.performance.toFixed(2)}%`;
-            valueSpan.style.color = sector.performance >= 0 ? '#00FF00' : '#FF0000';
-
-            sectorDiv.appendChild(nameSpan);
-            sectorDiv.appendChild(barDiv);
-            sectorDiv.appendChild(valueSpan);
-
-            chartContainer.appendChild(sectorDiv);
-        });
     }
 
     async function fetchSectorPerformance() {
@@ -664,13 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { symbol: 'XLV', name: 'Healthcare' },
             { symbol: 'XLF', name: 'Financials' },
             { symbol: 'XLE', name: 'Energy' },
-            { symbol: 'XLY', name: 'Consumer Cyclical' },
-            { symbol: 'XLP', name: 'Consumer Defensive' },
-            { symbol: 'XLI', name: 'Industrials' },
-            { symbol: 'XLB', name: 'Basic Materials' },
-            { symbol: 'XLU', name: 'Utilities' },
-            { symbol: 'XLRE', name: 'Real Estate' },
-            { symbol: 'XLC', name: 'Communication Services' }
+            { symbol: 'XLY', name: 'Consumer Cyclical' }
         ];
 
         const sectorPerformance = [];
@@ -691,86 +403,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateSectorChart(sectorPerformance);
     }
-    
-async function searchStock() {
-    const symbol = document.getElementById('stock-symbol').value.toUpperCase();
-    const stockInfoElement = document.getElementById('stock-info');
-    stockInfoElement.innerHTML = 'Loading...';
-    try {
-        const quoteUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
-        const profileUrl = `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${apiKey}`;
-        const [quoteResponse, profileResponse] = await Promise.all([
-            fetch(quoteUrl),
-            fetch(profileUrl)
-        ]);
-        const quoteData = await quoteResponse.json();
-        const profileData = await profileResponse.json();
-        if (quoteData.error || profileData.error) {
-            throw new Error('Stock not found');
+
+    function updateSectorChart(sectorData) {
+        const chartContainer = document.getElementById('sector-chart');
+        chartContainer.innerHTML = '<h3 id="sector-title">Sector Performance</h3>';
+
+        sectorData.sort((a, b) => b.performance - a.performance);
+        const maxPerformance = Math.max(...sectorData.map(s => Math.abs(s.performance)));
+
+        sectorData.forEach(sector => {
+            const sectorDiv = document.createElement('div');
+            sectorDiv.className = 'sector-bar';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'sector-name';
+            nameSpan.textContent = sector.name;
+
+            const barDiv = document.createElement('div');
+            barDiv.className = 'bar';
+            const width = Math.abs(sector.performance) / maxPerformance * 70;
+            barDiv.style.width = `${width}%`;
+            barDiv.style.backgroundColor = sector.performance >= 0 ? '#00FF00' : '#FF0000';
+
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'performance-value';
+            valueSpan.textContent = `${sector.performance > 0 ? '+' : ''}${sector.performance.toFixed(2)}%`;
+            valueSpan.style.color = sector.performance >= 0 ? '#00FF00' : '#FF0000';
+
+            sectorDiv.appendChild(nameSpan);
+            sectorDiv.appendChild(barDiv);
+            sectorDiv.appendChild(valueSpan);
+
+            chartContainer.appendChild(sectorDiv);
+        });
+    }
+
+    async function searchStock() {
+        const symbol = document.getElementById('stock-symbol').value.toUpperCase();
+        const stockInfoElement = document.getElementById('stock-info');
+        stockInfoElement.innerHTML = 'Loading...';
+        try {
+            const quoteUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+            const profileUrl = `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${apiKey}`;
+            const [quoteResponse, profileResponse] = await Promise.all([
+                fetch(quoteUrl),
+                fetch(profileUrl)
+            ]);
+            const quoteData = await quoteResponse.json();
+            const profileData = await profileResponse.json();
+            if (quoteData.error || profileData.error) {
+                throw new Error('Stock not found');
+            }
+            const marketCap = (profileData.marketCapitalization * 1000000).toLocaleString();
+            const peRatio = (quoteData.c / (profileData.finnhubIndustry === 'Technology' ? 20 : 15)).toFixed(2);
+            
+            const percentChange = ((quoteData.c - quoteData.pc) / quoteData.pc * 100).toFixed(2);
+            const changeSign = percentChange >= 0 ? '+' : '';
+            const changeColor = percentChange >= 0 ? '#00FF00' : '#FF4500';
+
+            stockInfoElement.innerHTML = `
+                <h3>${profileData.name} (${symbol})</h3>
+                <p><strong>Industry:</strong> ${profileData.finnhubIndustry}</p>
+                <p><strong>Price:</strong> $${quoteData.c.toFixed(2)} 
+                   <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
+                     (${changeSign}${percentChange}%)
+                   </span>
+                </p>
+                <p><strong>Market Cap:</strong> $${marketCap}</p>
+                <p><strong>Day's High:</strong> $${quoteData.h.toFixed(2)}</p>
+                <p><strong>Day's Low:</strong> $${quoteData.l.toFixed(2)}</p>
+            `;
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+            stockInfoElement.innerHTML = 'Error fetching stock data. Please try again.';
         }
-        const marketCap = (profileData.marketCapitalization * 1000000).toLocaleString();
-        const peRatio = (quoteData.c / (profileData.finnhubIndustry === 'Technology' ? 20 : 15)).toFixed(2);
-        
-        // Calculate percentage change
-        const percentChange = ((quoteData.c - quoteData.pc) / quoteData.pc * 100).toFixed(2);
-        const changeSign = percentChange >= 0 ? '+' : '';
-        const changeColor = percentChange >= 0 ? '#00FF00' : '#FF4500'; // Brighter green and orange-red
-
-        stockInfoElement.innerHTML = `
-            <h3>${profileData.name} (${symbol})</h3>
-            <p><strong>Industry:</strong> ${profileData.finnhubIndustry}</p>
-            <p><strong>Price:</strong> $${quoteData.c.toFixed(2)} 
-               <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
-                 (${changeSign}${percentChange}%)
-               </span>
-            </p>
-            <p><strong>Market Cap:</strong> $${marketCap}</p>
-            <p><strong>Day's High:</strong> $${quoteData.h.toFixed(2)}</p>
-            <p><strong>Day's Low:</strong> $${quoteData.l.toFixed(2)}</p>
-        `;
-    } catch (error) {
-        console.error('Error fetching stock data:', error);
-        stockInfoElement.innerHTML = 'Error fetching stock data. Please try again.';
     }
-}
-function displayMarketStatus(statusData) {
-    const marketStatusElement = document.getElementById('market-status');
-    const marketStatusCornerElement = document.getElementById('market-status-corner');
-    const chartLine = document.getElementById('chart-line');
-    const nyseStatus = statusData.exchanges.nyse;
-    const nasdaqStatus = statusData.exchanges.nasdaq;
 
-    const nyseColorClass = (nyseStatus === 'open') 
-        ? 'market-open' 
-        : (nyseStatus === 'extended-hours') 
-        ? 'market-extended' 
-        : 'market-closed';
-
-    const nasdaqColorClass = (nasdaqStatus === 'open') 
-        ? 'market-open' 
-        : (nasdaqStatus === 'extended-hours') 
-        ? 'market-extended' 
-        : 'market-closed';
-
-    marketStatusElement.innerHTML = `NYSE: 
-        <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
-        <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
-
-    // Update the corner status
-    const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
-    const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
-    
-    if (isOpen) {
-        chartLine.style.stroke = '#00FF00'; // Bright green for open
-        marketStatusCornerElement.classList.add('blinking');
-    } else if (isExtended) {
-        chartLine.style.stroke = '#FFA500'; // Orange for extended hours
-        marketStatusCornerElement.classList.remove('blinking');
-    } else {
-        chartLine.style.stroke = '#FF0000'; // Red for closed
-        marketStatusCornerElement.classList.remove('blinking');
+    function resetSearch() {
+        document.getElementById('stock-symbol').value = '';
+        document.getElementById('stock-info').innerHTML = '';
     }
-}
 
     function updateUTCClock() {
         const now = new Date();
@@ -784,7 +496,6 @@ function displayMarketStatus(statusData) {
         displayIndexPerformance('QQQ', 'qqq-performance', 'Nasdaq 100');
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
-        loadBerkshireInvestments();
         loadRSSFeed();
         updateUTCClock();
         countdown = 120;
@@ -797,133 +508,145 @@ function displayMarketStatus(statusData) {
             refreshAllData();
         }
     }
-document.addEventListener('DOMContentLoaded', () => {
-    const blogPosts = document.querySelectorAll('.blog-post');
-    
-    blogPosts.forEach((post, index) => {
-        const commentSection = post.querySelector('.comment-section');
-        const commentsContainer = commentSection.querySelector('.comments');
-        const commentInput = commentSection.querySelector('.comment-input');
-        const postButton = commentSection.querySelector('.post-comment');
+
+    function createPixelTrafficLight() {
+        const lightContainer = document.querySelector('.pixel-traffic-light');
+        const pixelStates = [
+            0,0,1,0,0,
+            0,1,1,1,0,
+            1,1,1,1,1,
+            1,1,1,1,1,
+            1,1,1,1,1,
+            0,1,1,1,0,
+            0,0,1,0,0
+        ];
         
-        // Load existing comments
-        const existingComments = JSON.parse(localStorage.getItem(`comments_${index}`)) || [];
-        existingComments.forEach(comment => {
-            const commentElement = createCommentElement(comment);
-            commentsContainer.appendChild(commentElement);
+        pixelStates.forEach((state, index) => {
+            const pixel = document.createElement('div');
+            pixel.className = `pixel ${state ? 'on' : ''}`;
+            if (index < 15) pixel.classList.add('red');
+            else if (index < 25) pixel.classList.add('yellow');
+            else pixel.classList.add('green');
+            lightContainer.appendChild(pixel);
         });
+    }
+
+    function updateTrafficLight(status) {
+        const redPixels = document.querySelectorAll('.pixel.red');
+        const yellowPixels = document.querySelectorAll('.pixel.yellow');
+        const greenPixels = document.querySelectorAll('.pixel.green');
         
-        postButton.addEventListener('click', () => {
-            const commentText = commentInput.value.trim();
-            if (commentText) {
-                const commentElement = createCommentElement(commentText);
-                commentsContainer.appendChild(commentElement);
-                commentInput.value = '';
-                
-                // Save to local storage
-                existingComments.push(commentText);
-                localStorage.setItem(`comments_${index}`, JSON.stringify(existingComments));
+        [redPixels, yellowPixels, greenPixels].forEach(pixels => 
+            pixels.forEach(pixel => pixel.classList.remove('on'))
+        );
+
+        if (status === 'closed') {
+            redPixels.forEach(pixel => pixel.classList.add('on'));
+        } else if (status === 'extended') {
+            yellowPixels.forEach(pixel => pixel.classList.add('on'));
+        } else if (status === 'open') {
+            greenPixels.forEach(pixel => pixel.classList.add('on'));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createPixelTrafficLight();
+        refreshAllData();
+        setInterval(updateCountdown, 1000);
+        setInterval(updateUTCClock, 1000);
+        
+        const loadSectorsButton = document.getElementById('load-sectors');
+        loadSectorsButton.addEventListener('click', async () => {
+            const sectorChart = document.getElementById('sector-chart');
+            if (sectorChart.style.display === 'none') {
+                loadSectorsButton.disabled = true;
+                loadSectorsButton.textContent = 'Loading...';
+                sectorChart.style.display = 'block';
+                try {
+                    await fetchSectorPerformance();
+                    loadSectorsButton.textContent = 'Hide Sector Performance';
+                } catch (error) {
+                    console.error('Error loading sector performance:', error);
+                    sectorChart.innerHTML = 'Error loading sector performance. Please try again.';
+                }
+                loadSectorsButton.disabled = false;
+            } else {
+                sectorChart.style.display = 'none';
+                loadSectorsButton.textContent = 'Load Sector Performance';
+            }
+        });
+
+        const berkshireButton = document.getElementById('berkshire-form4-button');
+        berkshireButton.addEventListener('click', async () => {
+            const formData = await fetchLatestBerkshireForm4();
+            if (formData) {
+                displayForm4Popup(formData);
+            } else {
+                alert('Error fetching Berkshire Form 4 data. Please try again later.');
             }
         });
     });
-});
 
-function createCommentElement(text) {
-    const commentElement = document.createElement('div');
-    commentElement.className = 'comment';
-    commentElement.textContent = text;
-    return commentElement;
-}
+    async function fetchLatestBerkshireForm4() {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const edgarUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=4&dateb=&owner=include&start=0&count=1&output=atom';
+        const fullUrl = proxyUrl + encodeURIComponent(edgarUrl);
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-            createPixelTrafficLight(); // Create the pixel traffic light
-            refreshAllData();
-            setInterval(updateCountdown, 1000);
-            setInterval(updateUTCClock, 1000);
-            document.getElementById('load-sectors').addEventListener('click', fetchSectorPerformance);
-        });
-    
-    function resetSearch() {
-        document.getElementById('stock-symbol').value = '';
-        document.getElementById('stock-info').innerHTML = '';
+        try {
+            const response = await fetch(fullUrl);
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            
+            const entry = xmlDoc.querySelector('entry');
+            const title = entry.querySelector('title').textContent;
+            const link = entry.querySelector('link').getAttribute('href');
+            const date = new Date(entry.querySelector('updated').textContent);
+            
+            return { title, link, date };
+        } catch (error) {
+            console.error('Error fetching Berkshire Form 4:', error);
+            return null;
+        }
     }
-    function createPixelTrafficLight() {
-            const lightContainer = document.querySelector('.pixel-traffic-light');
-            const pixelStates = [
-                0,0,1,0,0,
-                0,1,1,1,0,
-                1,1,1,1,1,
-                1,1,1,1,1,
-                1,1,1,1,1,
-                0,1,1,1,0,
-                0,0,1,0,0
-            ];
-            
-            pixelStates.forEach((state, index) => {
-                const pixel = document.createElement('div');
-                pixel.className = `pixel ${state ? 'on' : ''}`;
-                if (index < 15) pixel.classList.add('red');
-                else if (index < 25) pixel.classList.add('yellow');
-                else pixel.classList.add('green');
-                lightContainer.appendChild(pixel);
-            });
-        }
 
-        function updateTrafficLight(status) {
-            const redPixels = document.querySelectorAll('.pixel.red');
-            const yellowPixels = document.querySelectorAll('.pixel.yellow');
-            const greenPixels = document.querySelectorAll('.pixel.green');
-            
-            [redPixels, yellowPixels, greenPixels].forEach(pixels => 
-                pixels.forEach(pixel => pixel.classList.remove('on'))
-            );
+    function displayForm4Popup(formData) {
+        const popup = document.createElement('div');
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000000;
+            border: 2px solid #00FF00;
+            padding: 20px;
+            z-index: 1000;
+            color: #00FF00;
+            font-family: "Courier New", Courier, monospace;
+        `;
 
-            if (status === 'closed') {
-                redPixels.forEach(pixel => pixel.classList.add('on'));
-            } else if (status === 'extended') {
-                yellowPixels.forEach(pixel => pixel.classList.add('on'));
-            } else if (status === 'open') {
-                greenPixels.forEach(pixel => pixel.classList.add('on'));
-            }
-        }
+        popup.innerHTML = `
+            <h3>Latest Berkshire Hathaway Form 4</h3>
+            <p><strong>Title:</strong> ${formData.title}</p>
+            <p><strong>Filed on:</strong> ${formData.date.toLocaleDateString()}</p>
+            <a href="${formData.link}" target="_blank" style="color: #00FF00;">View Full Form</a>
+            <button id="close-popup" style="
+                background-color: #000000;
+                color: #00FF00;
+                border: 1px solid #00FF00;
+                padding: 5px 10px;
+                margin-top: 10px;
+                cursor: pointer;
+                font-family: "Courier New", Courier, monospace;
+            ">Close</button>
+        `;
 
-        // Modify your existing displayMarketStatus function
-        function displayMarketStatus(statusData) {
-            const marketStatusElement = document.getElementById('market-status');
-            const nyseStatus = statusData.exchanges.nyse;
-            const nasdaqStatus = statusData.exchanges.nasdaq;
+        document.body.appendChild(popup);
 
-            const nyseColorClass = (nyseStatus === 'open') 
-                ? 'market-open' 
-                : (nyseStatus === 'extended-hours') 
-                ? 'market-extended' 
-                : 'market-closed';
-
-            const nasdaqColorClass = (nasdaqStatus === 'open') 
-                ? 'market-open' 
-                : (nasdaqStatus === 'extended-hours') 
-                ? 'market-extended' 
-                : 'market-closed';
-
-            marketStatusElement.innerHTML = `NYSE: 
-                <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
-                <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
-
-            // Update the traffic light
-            const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
-            const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
-            
-            let status;
-            if (isOpen) status = 'open';
-            else if (isExtended) status = 'extended';
-            else status = 'closed';
-
-            updateTrafficLight(status);
-        }
-        function goToFlights() {
-    window.location.href = 'https://leoalaplage.github.io/flights/';
-}
-    </script>
+        document.getElementById('close-popup').addEventListener('click', () => {
+            document.body.removeChild(popup);
+        });
+    }
+</script>
 </body>
 </html>
