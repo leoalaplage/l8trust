@@ -549,6 +549,94 @@
         }
     }
 
+async function fetchLatestBerkshireForm4() {
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const edgarUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=4&dateb=&owner=include&start=0&count=5&output=atom';
+    const fullUrl = proxyUrl + encodeURIComponent(edgarUrl);
+
+    try {
+        const response = await fetch(fullUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+        
+        const entries = xmlDoc.querySelectorAll('entry');
+        const formDataArray = Array.from(entries).map(entry => {
+            const title = entry.querySelector('title').textContent;
+            const link = entry.querySelector('link').getAttribute('href');
+            const date = new Date(entry.querySelector('updated').textContent);
+            
+            // Extract the accession number and create a direct link to the filing
+            const accessionMatch = link.match(/accession_number=(\d+-\d+-\d+)/);
+            let directLink = link; // Default to the original link
+            if (accessionMatch && accessionMatch[1]) {
+                const accessionNumber = accessionMatch[1].replace(/-/g, '');
+                directLink = `https://www.sec.gov/Archives/edgar/data/1067983/${accessionNumber}/xslF345X03/doc4.xml`;
+            }
+            
+            return { title, link: directLink, date };
+        });
+        
+        return formDataArray;
+    } catch (error) {
+        console.error('Error fetching Berkshire Form 4:', error);
+        return null;
+    }
+}
+
+function displayForm4Popup(formDataArray) {
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #000000;
+        border: 2px solid #00FF00;
+        padding: 20px;
+        z-index: 1000;
+        color: #00FF00;
+        font-family: "Courier New", Courier, monospace;
+        max-height: 80vh;
+        overflow-y: auto;
+        width: 80%;
+        max-width: 600px;
+    `;
+
+    let content = '<h3>Latest Berkshire Hathaway Form 4 Filings</h3>';
+    formDataArray.forEach((formData, index) => {
+        content += `
+            <div style="margin-bottom: 15px; border-bottom: 1px solid #00FF00; padding-bottom: 10px;">
+                <p><strong>Title:</strong> ${formData.title}</p>
+                <p><strong>Filed on:</strong> ${formData.date.toLocaleDateString()}</p>
+                <a href="${formData.link}" target="_blank" style="color: #00FF00;">View Full Form</a>
+            </div>
+        `;
+    });
+
+    content += `
+        <button id="close-popup" style="
+            background-color: #000000;
+            color: #00FF00;
+            border: 1px solid #00FF00;
+            padding: 5px 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: "Courier New", Courier, monospace;
+        ">Close</button>
+    `;
+
+    popup.innerHTML = content;
+    document.body.appendChild(popup);
+
+    document.getElementById('close-popup').addEventListener('click', () => {
+        document.body.removeChild(popup);
+    });
+}
+
     document.addEventListener('DOMContentLoaded', () => {
         createPixelTrafficLight();
         refreshAllData();
@@ -578,75 +666,18 @@
 
         const berkshireButton = document.getElementById('berkshire-form4-button');
         berkshireButton.addEventListener('click', async () => {
-            const formData = await fetchLatestBerkshireForm4();
-            if (formData) {
-                displayForm4Popup(formData);
+            berkshireButton.disabled = true;
+            berkshireButton.textContent = 'Loading...';
+            const formDataArray = await fetchLatestBerkshireForm4();
+            if (formDataArray && formDataArray.length > 0) {
+                displayForm4Popup(formDataArray);
             } else {
                 alert('Error fetching Berkshire Form 4 data. Please try again later.');
             }
+            berkshireButton.disabled = false;
+            berkshireButton.textContent = 'Latest Berkshire Form 4';
         });
     });
-
-    async function fetchLatestBerkshireForm4() {
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const edgarUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=4&dateb=&owner=include&start=0&count=1&output=atom';
-        const fullUrl = proxyUrl + encodeURIComponent(edgarUrl);
-
-        try {
-            const response = await fetch(fullUrl);
-            const xmlText = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-            
-            const entry = xmlDoc.querySelector('entry');
-            const title = entry.querySelector('title').textContent;
-            const link = entry.querySelector('link').getAttribute('href');
-            const date = new Date(entry.querySelector('updated').textContent);
-            
-            return { title, link, date };
-        } catch (error) {
-            console.error('Error fetching Berkshire Form 4:', error);
-            return null;
-        }
-    }
-
-    function displayForm4Popup(formData) {
-        const popup = document.createElement('div');
-        popup.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #000000;
-            border: 2px solid #00FF00;
-            padding: 20px;
-            z-index: 1000;
-            color: #00FF00;
-            font-family: "Courier New", Courier, monospace;
-        `;
-
-        popup.innerHTML = `
-            <h3>Latest Berkshire Hathaway Form 4</h3>
-            <p><strong>Title:</strong> ${formData.title}</p>
-            <p><strong>Filed on:</strong> ${formData.date.toLocaleDateString()}</p>
-            <a href="${formData.link}" target="_blank" style="color: #00FF00;">View Full Form</a>
-            <button id="close-popup" style="
-                background-color: #000000;
-                color: #00FF00;
-                border: 1px solid #00FF00;
-                padding: 5px 10px;
-                margin-top: 10px;
-                cursor: pointer;
-                font-family: "Courier New", Courier, monospace;
-            ">Close</button>
-        `;
-
-        document.body.appendChild(popup);
-
-        document.getElementById('close-popup').addEventListener('click', () => {
-            document.body.removeChild(popup);
-        });
-    }
 </script>
 </body>
 </html>
