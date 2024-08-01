@@ -606,7 +606,28 @@ function displayForm4Popup(formDataArray) {
         max-width: 600px;
     `;
 
-    let content = '<h3>Latest Berkshire Hathaway Form 4 Filings</h3>';
+    let content = `
+        <div style="position: relative;">
+            <h3 style="margin-top: 0;">Latest Berkshire Hathaway Form 4 Filings</h3>
+            <button id="close-popup-x" style="
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                background-color: #000000;
+                color: #00FF00;
+                border: 1px solid #00FF00;
+                width: 25px;
+                height: 25px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 16px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">X</button>
+        </div>
+    `;
+
     formDataArray.forEach((formData, index) => {
         content += `
             <div style="margin-bottom: 15px; border-bottom: 1px solid #00FF00; padding-bottom: 10px;">
@@ -625,7 +646,8 @@ function displayForm4Popup(formDataArray) {
             padding: 5px 10px;
             margin-top: 10px;
             cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
         ">Close</button>
     `;
 
@@ -633,6 +655,10 @@ function displayForm4Popup(formDataArray) {
     document.body.appendChild(popup);
 
     document.getElementById('close-popup').addEventListener('click', () => {
+        document.body.removeChild(popup);
+    });
+
+    document.getElementById('close-popup-x').addEventListener('click', () => {
         document.body.removeChild(popup);
     });
 }
