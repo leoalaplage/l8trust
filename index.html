@@ -142,22 +142,7 @@
         border: 2px solid #00FF00;
         padding: 2px;
     }
-.pixel-traffic-light {
-    display: grid;
-    grid-template-columns: repeat(5, 6px);
-    grid-template-rows: repeat(7, 6px);
-    gap: 1px;
-    width: 34px;
-    height: 48px;
-}
-.pixel {
-    width: 6px;
-    height: 6px;
-    background-color: #333;
-}
-.pixel.on.red { background-color: #FF0000; }
-.pixel.on.yellow { background-color: #FFA500; }
-.pixel.on.green { background-color: #00FF00; }
+
     #sector-performance {
         margin-top: 20px;
         text-align: center;
@@ -186,15 +171,44 @@
     #berkshire-form4-button:hover {
         background-color: #003300;
     }
+    #airport-weather {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#airport-weather input, #airport-weather button {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px;
+    margin: 5px;
+}
+
+#airport-weather button:hover {
+    background-color: #003300;
+}
+
+#metar-taf-display {
+    margin-top: 10px;
+    text-align: left;
+    white-space: pre-wrap;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+    background-color: #000000;
+    border: 1px solid #00FF00;
+    padding: 10px;
+}
 </style>
 </head>
 <body>
 <div class="container">
-    <div id="market-status-corner">
-        <div class="pixel-traffic-light">
-            <!-- 5x7 grid of pixels will be created here by JavaScript -->
-        </div>
-    </div>
+<div id="airport-weather" style="position: absolute; top: 10px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 12px; max-width: 250px; overflow-y: auto; max-height: 80vh; z-index: 1000;">
+    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">Airport Weather</h4>
+    <div id="lfml-metar-taf"></div>
+    <div id="lfrz-metar-taf"></div>
+</div>
     <div id="utc-clock"></div>
     <button id="berkshire-form4-button">Latest Berkshire Form 4</button>
     <h1 class="blink">L8TRUST</h1>
@@ -227,6 +241,12 @@
         <h3>Latest News</h3>
         <ul id="news-list"></ul>
     </div>
+    <div id="airport-weather">
+    <h3>Airport Weather</h3>
+    <input type="text" id="airport-code" placeholder="Enter airport code (e.g., KJFK)">
+    <button onclick="fetchAirportWeather()">Get Weather</button>
+    <div id="metar-taf-display"></div>
+</div>
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
 </div>
 <script>
@@ -276,7 +296,7 @@
         const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
         const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
         
-        updateTrafficLight(isOpen ? 'open' : (isExtended ? 'extended' : 'closed'));
+        
     }
 
     async function fetchIndexPerformance(symbol) {
@@ -496,6 +516,7 @@
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
         loadRSSFeed();
+        fetchLFMLWeather();  // Add this line
         updateUTCClock();
         countdown = 120;
     }
@@ -507,30 +528,6 @@
             refreshAllData();
         }
     }
-
-function createPixelTrafficLight() {
-    const lightContainer = document.querySelector('.pixel-traffic-light');
-    for (let i = 0; i < 35; i++) {
-        const pixel = document.createElement('div');
-        pixel.className = 'pixel';
-        lightContainer.appendChild(pixel);
-    }
-}
-
-function updateTrafficLight(status) {
-    const pixels = document.querySelectorAll('.pixel');
-    
-    pixels.forEach(pixel => {
-        pixel.classList.remove('red', 'yellow', 'green');
-        if (status === 'closed') {
-            pixel.classList.add('red', 'on');
-        } else if (status === 'extended') {
-            pixel.classList.add('yellow', 'on');
-        } else if (status === 'open') {
-            pixel.classList.add('green', 'on');
-        }
-    });
-}
 
 async function fetchLatestBerkshireForm4() {
     const proxyUrl = 'https://api.allorigins.win/raw?url=';
@@ -647,7 +644,6 @@ function displayForm4Popup(formDataArray) {
 }
 
     document.addEventListener('DOMContentLoaded', () => {
-        createPixelTrafficLight();
         refreshAllData();
         setInterval(updateCountdown, 1000);
         setInterval(updateUTCClock, 1000);
@@ -687,6 +683,90 @@ function displayForm4Popup(formDataArray) {
             berkshireButton.textContent = 'Latest Berkshire Form 4';
         });
     });
+async function fetchAirportWeather() {
+    const airportCode = document.getElementById('airport-code').value.toUpperCase();
+    const displayElement = document.getElementById('metar-taf-display');
+    displayElement.textContent = 'Loading...';
+
+    const corsProxy = 'https://corsproxy.io/?';
+    const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=${airportCode}&format=raw&hours=0`)}`;
+    const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=${airportCode}&format=raw`)}`;
+
+    try {
+        const [metarResponse, tafResponse] = await Promise.all([
+            fetch(metarUrl),
+            fetch(tafUrl)
+        ]);
+
+        const metarText = await metarResponse.text();
+        const tafText = await tafResponse.text();
+
+        if (metarResponse.ok && tafResponse.ok) {
+            let content = '';
+            
+            if (metarText.trim()) {
+                content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
+            } else {
+                content += `<strong>METAR:</strong> Not available\n\n`;
+            }
+
+            if (tafText.trim()) {
+                content += `<strong>TAF:</strong>\n${tafText.trim()}`;
+            } else {
+                content += `<strong>TAF:</strong> Not available`;
+            }
+
+            displayElement.innerHTML = content;
+        } else {
+            throw new Error('Failed to fetch weather data');
+        }
+    } catch (error) {
+        console.error('Error fetching airport weather:', error);
+        displayElement.textContent = `Error: ${error.message}. Please check the airport code and try again.`;
+    }
+}
+
+async function fetchLFMLWeather() {
+    const displayElement = document.getElementById('lfml-metar-taf');
+    displayElement.textContent = 'Loading LFML weather...';
+
+    const corsProxy = 'https://corsproxy.io/?';
+    const metarUrl = `${corsProxy}${encodeURIComponent('https://aviationweather.gov/api/data/metar?ids=LFML&format=raw&hours=0')}`;
+    const tafUrl = `${corsProxy}${encodeURIComponent('https://aviationweather.gov/api/data/taf?ids=LFML&format=raw')}`;
+
+    try {
+        const [metarResponse, tafResponse] = await Promise.all([
+            fetch(metarUrl),
+            fetch(tafUrl)
+        ]);
+
+        const metarText = await metarResponse.text();
+        const tafText = await tafResponse.text();
+
+        if (metarResponse.ok && tafResponse.ok) {
+            let content = '';
+            
+            if (metarText.trim()) {
+                content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
+            } else {
+                content += `<strong>METAR:</strong> Not available\n\n`;
+            }
+
+            if (tafText.trim()) {
+                content += `<strong>TAF:</strong>\n${tafText.trim()}`;
+            } else {
+                content += `<strong>TAF:</strong> Not available`;
+            }
+
+            displayElement.innerHTML = content;
+        } else {
+            throw new Error('Failed to fetch LFML weather data');
+        }
+    } catch (error) {
+        console.error('Error fetching LFML weather:', error);
+        displayElement.textContent = `Error: ${error.message}. Please try again later.`;
+    }
+}
 </script>
 </body>
 </html>
