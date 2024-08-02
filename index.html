@@ -188,6 +188,7 @@
 
 #airport-weather button:hover {
     background-color: #003300;
+    cursor: pointer;
 }
 
 #metar-taf-display {
@@ -195,7 +196,7 @@
     text-align: left;
     white-space: pre-wrap;
     font-family: "Courier New", Courier, monospace;
-    font-size: 14px;
+    font-size: 16px;
     background-color: #000000;
     border: 1px solid #00FF00;
     padding: 10px;
@@ -205,7 +206,7 @@
 <body>
 <div class="container">
 <div id="airport-weather" style="position: absolute; top: 10px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
-    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">Airport Weather</h4>
+    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">LFML Weather</h4>
     <div id="lfml-metar-taf"></div>
     <div id="lfrz-metar-taf"></div>
 </div>
