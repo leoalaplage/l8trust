@@ -233,6 +233,10 @@
 </div>
     <div id="utc-clock"></div>
     <button id="berkshire-form4-button">Latest Berkshire Form 4</button>
+    <div id="crypto-dashboard" style="position: absolute; top: 90px; right: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px;">
+    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">Crypto Prices</h4>
+    <div id="crypto-prices"></div>
+</div>
     <h1 class="blink">L8TRUST</h1>
     <div id="market-status"></div>
     <div id="major-indices">
@@ -541,6 +545,7 @@
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
         loadRSSFeed();
+        fetchCryptoPrices();
         fetchLFMLWeather();  // Add this line
         updateUTCClock();
         countdown = 120;
@@ -670,6 +675,7 @@ function displayForm4Popup(formDataArray) {
 
     document.addEventListener('DOMContentLoaded', () => {
         refreshAllData();
+        fetchCryptoPrices();
         setInterval(updateCountdown, 1000);
         setInterval(updateUTCClock, 1000);
         
@@ -809,6 +815,35 @@ async function fetchLFMLWeather() {
     } catch (error) {
         console.error('Error fetching LFML weather:', error);
         displayElement.textContent = `Error: ${error.message}. Please try again later.`;
+    }
+}
+async function fetchCryptoPrices() {
+    const apiKey = '73AD1E2B-B219-4DFC-9636-69C5916545E5';
+    const symbols = ['BTC', 'ETH', 'SOL', 'AVAX'];
+    const cryptoPricesElement = document.getElementById('crypto-prices');
+    cryptoPricesElement.innerHTML = 'Loading...';
+
+    try {
+        const prices = await Promise.all(symbols.map(async (symbol) => {
+            const response = await fetch(`https://rest.coinapi.io/v1/exchangerate/${symbol}/USD`, {
+                headers: { 'X-CoinAPI-Key': apiKey }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return { symbol, price: data.rate };
+        }));
+
+        let content = '';
+        prices.forEach(({ symbol, price }) => {
+            content += `<p><strong>${symbol}:</strong> $${price.toFixed(2)}</p>`;
+        });
+
+        cryptoPricesElement.innerHTML = content;
+    } catch (error) {
+        console.error('Error fetching crypto prices:', error);
+        cryptoPricesElement.innerHTML = 'Error fetching prices. Please try again later.';
     }
 }
 </script>
