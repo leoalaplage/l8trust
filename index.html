@@ -33,6 +33,7 @@
     }
     #market-status {
         text-align: center;
+        text-transform: uppercase;
     }
     h3 {
         color: #FF00FF;
@@ -55,19 +56,32 @@
         margin-top: 20px;
         color: #FFFFFF;
     }
+#rss-feed {
+        max-height: 4000px;
+        overflow-y: auto;
+    }
     #news-list {
         list-style-type: none;
-        padding-left: 20px;
+        padding-left: 0;
     }
     #news-list li {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        padding: 10px;
+        
+        
     }
     #news-list a {
         color: #00FF00;
         text-decoration: none;
+
     }
     #news-list a:hover {
         text-decoration: underline;
+    }
+    .news-timestamp {
+        font-size: 0.8em;
+        color: #888;
+        margin-top: 5px;
     }
     #major-indices {
         text-align: center;
@@ -167,6 +181,7 @@
         cursor: pointer;
         font-family: "Courier New", Courier, monospace;
         font-size: 16px;
+        min-width: 230px;
     }
     #berkshire-form4-button:hover {
         background-color: #003300;
@@ -191,22 +206,45 @@
     margin-bottom: 15px;
 }
 
-#airport-weather input, #airport-weather button {
+#metar-search {
+    margin-top: 20px;
+    text-align: center;
+    background-color: #000000;
+    border: 2px solid #00FF00;
+    padding: 15px;
+}
+
+#metar-search h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #FF00FF;
+}
+
+.airport-weather-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#metar-search input, #metar-search button {
     font-family: "Courier New", Courier, monospace;
     font-size: 16px;
     background-color: #000000;
     color: #00FF00;
     border: 1px solid #00FF00;
     padding: 5px 10px;
-    margin: 0 5px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-#airport-weather button {
+#metar-search button {
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-#airport-weather button:hover {
+#metar-search button:hover {
     background-color: #003300;
 }
 
@@ -219,22 +257,31 @@
     background-color: #000000;
     border: 1px solid #00FF00;
     padding: 15px;
-    max-height: 500px;
+    max-height: 200px;
     overflow-y: auto;
 }
 </style>
 </head>
 <body>
 <div class="container">
-<div id="airport-weather" style="position: absolute; top: 10px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
+<div id="airport-weather" style="position: absolute; top: 10px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
     <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">LFML Weather</h4>
     <div id="lfml-metar-taf"></div>
-    <div id="lfrz-metar-taf"></div>
+    
+</div>
+<div id="metar-search" style="position: absolute; top: 360px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
+    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">METAR Search</h4>
+    <div class="airport-weather-controls">
+        <input type="text" id="airport-code" placeholder="Enter airport code">
+        <button onclick="fetchAirportWeather()">Get Weather</button>
+        <button onclick="refreshAirportWeather()">Refresh</button>
+    </div>
+    <div id="metar-taf-display"></div>
 </div>
     <div id="utc-clock"></div>
     <button id="berkshire-form4-button">Latest Berkshire Form 4</button>
-    <div id="crypto-dashboard" style="position: absolute; top: 90px; right: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px;">
-    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">Crypto Prices</h4>
+    <div id="crypto-dashboard" style="position: absolute; top: 90px; right: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px;">
+    <h4 style="margin-top: 0; color: #FF00FF; text-align: center; min-width: 230px;">Crypto Prices</h4>
     <div id="crypto-prices"></div>
 </div>
     <h1 class="blink">L8TRUST</h1>
@@ -267,15 +314,7 @@
         <h3>Latest News</h3>
         <ul id="news-list"></ul>
     </div>
-<div id="airport-weather">
-    <h3>Airport Weather</h3>
-    <div class="airport-weather-controls">
-        <input type="text" id="airport-code" placeholder="Enter airport code">
-        <button onclick="fetchAirportWeather()">Get Weather</button>
-        <button onclick="refreshAirportWeather()">Refresh</button>
-    </div>
-    <div id="metar-taf-display"></div>
-</div>
+
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
 </div>
 <script>
@@ -301,32 +340,41 @@
         }
     }
 
-    function displayMarketStatus(statusData) {
-        const marketStatusElement = document.getElementById('market-status');
-        const nyseStatus = statusData.exchanges.nyse;
-        const nasdaqStatus = statusData.exchanges.nasdaq;
+function displayMarketStatus(statusData) {
+    const marketStatusElement = document.getElementById('market-status');
+    const nyseStatus = statusData.exchanges.nyse;
+    const nasdaqStatus = statusData.exchanges.nasdaq;
 
-        const nyseColorClass = (nyseStatus === 'open') 
-            ? 'market-open' 
-            : (nyseStatus === 'extended-hours') 
-            ? 'market-extended' 
-            : 'market-closed';
-
-        const nasdaqColorClass = (nasdaqStatus === 'open') 
-            ? 'market-open' 
-            : (nasdaqStatus === 'extended-hours') 
-            ? 'market-extended' 
-            : 'market-closed';
-
-        marketStatusElement.innerHTML = `NYSE: 
-            <span class="${nyseColorClass}">${nyseStatus}</span>, NASDAQ: 
-            <span class="${nasdaqColorClass}">${nasdaqStatus}</span>`;
-
-        const isOpen = nyseStatus === 'open' || nasdaqStatus === 'open';
-        const isExtended = nyseStatus === 'extended-hours' || nasdaqStatus === 'extended-hours';
-        
-        
+    function getStatusColor(status) {
+        switch (status) {
+            case 'open':
+                return '#00FF00';  // Green
+            case 'closed':
+                return '#FF4500';  // Red
+            case 'extended-hours':
+                return '#FFA500';  // Orange
+            default:
+                return '#FFFFFF';  // White (default)
+        }
     }
+
+    function createStatusSpan(status) {
+        const spanElement = document.createElement('span');
+        spanElement.textContent = status;
+        spanElement.style.backgroundColor = getStatusColor(status);
+        spanElement.style.color = 'black';
+        spanElement.style.padding = '2px 5px';
+        spanElement.style.borderRadius = '3px';
+        spanElement.style.fontWeight = 'bold';
+        return spanElement;
+    }
+
+    marketStatusElement.innerHTML = '';
+    marketStatusElement.appendChild(document.createTextNode('NYSE: '));
+    marketStatusElement.appendChild(createStatusSpan(nyseStatus));
+    marketStatusElement.appendChild(document.createTextNode(' NASDAQ: '));
+    marketStatusElement.appendChild(createStatusSpan(nasdaqStatus));
+}
 
     async function fetchIndexPerformance(symbol) {
         const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
@@ -361,7 +409,7 @@
         }
     }
 
-    async function loadRSSFeed() {
+   async function loadRSSFeed() {
         const rssUrl = 'https://breakingthenews.net/news-feed.xml';
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
         
@@ -378,16 +426,57 @@
             items.forEach(item => {
                 const title = item.querySelector('title').textContent;
                 const link = item.querySelector('link').textContent;
+                const pubDate = new Date(item.querySelector('pubDate').textContent);
+                const description = item.querySelector('description').textContent;
+                
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = link;
                 a.textContent = title;
+                
+                const descriptionSpan = document.createElement('span');
+                descriptionSpan.innerHTML = truncateDescription(description, 100);
+                
+                const timestampSpan = document.createElement('span');
+                timestampSpan.className = 'news-timestamp';
+                timestampSpan.textContent = formatDate(pubDate);
+                
                 li.appendChild(a);
+                li.appendChild(descriptionSpan);
+                li.appendChild(timestampSpan);
                 newsList.appendChild(li);
             });
         } catch (error) {
             console.error('Error fetching RSS feed:', error);
             document.getElementById('news-list').innerHTML = '<li>Error loading news feed. Please try again later.</li>';
+        }
+    }
+
+function truncateDescription(description, maxLength) {
+    const strippedDescription = description.replace(/<[^>]*>/g, '');
+    if (strippedDescription.length > maxLength) {
+        return strippedDescription.substring(0, maxLength);
+    }
+    return strippedDescription;
+}
+
+    function formatDate(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.round(diffMs / 60000);
+        const diffHours = Math.round(diffMins / 60);
+
+        if (diffMins < 60) {
+            return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+        } else {
+            return date.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: 'numeric', 
+                minute: 'numeric'
+            });
         }
     }
 
@@ -430,6 +519,10 @@
             { symbol: 'XLV', name: 'Healthcare' },
             { symbol: 'XLF', name: 'Financials' },
             { symbol: 'XLE', name: 'Energy' },
+            { symbol: 'XLU', name: 'Utilities' },
+            { symbol: 'XLI', name: 'Industrial' },
+            { symbol: 'XLP', name: 'Consumer Staples' },
+            { symbol: 'XLB', name: 'Materials' },
             { symbol: 'XLY', name: 'Consumer Cyclical' }
         ];
 
