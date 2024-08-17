@@ -7,42 +7,41 @@
 <style>
 body {
     font-family: "Courier New", Courier, monospace;
-    background-color: #000080;
+    background-color: #000000;
     color: #00FF00;
     font-size: 16px;
     line-height: 1.5;
-    min-width: 1200px;
-    overflow-x: auto;
-}
-
-html {
-    overflow-x: auto;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    max-width: none;
-    width: 1200px;
+    width: 800px;
     margin: 0 auto;
-    padding: 0 20px;
-    padding-left: 250px;
-    padding-right: 250px;
-    box-sizing: border-box;
+    padding: 20px;
+    border: 2px solid #00FF00;
 }
 
 h1 {
     text-align: center;
-    font-size: 40px;
+    font-size: 36px;
     color: #FFFF00;
     text-shadow: 2px 2px #FF00FF;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #FF00FF;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: underline;
 }
 
 #market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #berkshire-investments {
-    border: 2px solid #00FF00;
+    border: 1px dashed #00FF00;
     padding: 10px;
     margin-top: 20px;
     background-color: #000000;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 #market-status {
@@ -50,19 +49,12 @@ h1 {
     text-transform: uppercase;
 }
 
-h3 {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 10px;
-    text-decoration: underline;
-}
-
 .market-open { color: #00FF00; }
 .market-extended { color: #FFA500; }
 .market-closed { color: #FF0000; }
 
 .blink {
-    animation: blinker 1s linear infinite;
+    animation: blinker 1s step-end infinite;
 }
 
 @keyframes blinker {
@@ -77,18 +69,17 @@ h3 {
 }
 
 #rss-feed {
-    max-height: 4000px;
+    max-height: 300px;
     overflow-y: auto;
 }
 
 #news-list {
-    list-style-type: none;
-    padding-left: 0;
+    list-style-type: square;
+    padding-left: 20px;
 }
 
 #news-list li {
-    margin-bottom: 15px;
-    padding: 10px;
+    margin-bottom: 10px;
 }
 
 #news-list a {
@@ -103,7 +94,6 @@ h3 {
 .news-timestamp {
     font-size: 0.8em;
     color: #888;
-    margin-top: 5px;
 }
 
 #major-indices {
@@ -112,57 +102,21 @@ h3 {
 
 #stock-ticker {
     overflow: hidden;
-    padding: 10px 0;
     white-space: nowrap;
+    border-top: 1px solid #00FF00;
+    border-bottom: 1px solid #00FF00;
+    padding: 5px;
 }
 
 #ticker-content {
     display: inline-block;
     padding-left: 100%;
-    animation: ticker 50s linear infinite;
-}
-
-#ticker-content:hover {
-    animation-play-state: paused;
-}
-
-#ticker-content span {
-    margin-right: 40px;
+    animation: ticker 30s linear infinite;
 }
 
 @keyframes ticker {
     0% { transform: translate(0, 0); }
     100% { transform: translate(-100%, 0); }
-}
-
-.sector-bar {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.sector-name {
-    width: 150px;
-    text-align: right;
-    padding-right: 10px;
-}
-
-.bar {
-    height: 20px;
-    transition: width 0.5s ease-in-out;
-}
-
-.performance-value {
-    margin-left: 5px;
-}
-
-#utc-clock {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    font-size: 14px;
-    color: #00FF00;
-    z-index: 1000;
 }
 
 #stock-search {
@@ -179,98 +133,39 @@ h3 {
     padding: 5px;
 }
 
-#stock-search button, #load-sectors {
-    cursor: pointer;
-}
-
 #stock-search button:hover, #load-sectors:hover {
     background-color: #003300;
 }
 
-#market-status-corner {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #000;
-    border: 2px solid #00FF00;
-    padding: 2px;
-    z-index: 1000;
-}
-
 #sector-performance {
     margin-top: 20px;
-    text-align: center;
 }
 
-#sector-title {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-decoration: underline;
-}
-
-#berkshire-form4-button {
-    position: fixed;
-    top: 40px;
-    right: 10px;
-    margin: 10px auto;
-    padding: 5px 10px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    cursor: pointer;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-    min-width: 230px;
-    z-index: 1000;
-}
-
-#berkshire-form4-button:hover {
-    background-color: #003300;
-}
-
-#airport-weather {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #000;
-    border: 2px solid #00FF00;
-    padding: 15px;
-    font-size: 16px;
-    max-width: 230px;
-    min-width: 230px;
-    overflow-y: auto;
-    max-height: 100vh;
-    z-index: 1000;
-}
-
-#metar-search {
-    position: fixed;
-    top: 360px;
-    left: 10px;
-    background-color: #000;
-    border: 2px solid #00FF00;
-    padding: 15px;
-    font-size: 16px;
-    max-width: 230px;
-    min-width: 230px;
-    overflow-y: auto;
-    max-height: 100vh;
-    z-index: 1000;
-}
-
-#metar-search h4 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #FF00FF;
-}
-
-.airport-weather-controls {
+.sector-bar {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+}
+
+.sector-name {
+    width: 150px;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.bar {
+    height: 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+.performance-value {
+    margin-left: 5px;
+}
+
+#utc-clock, #berkshire-form4-button, #crypto-dashboard, #airport-weather, #metar-search {
+    position: static;
+    margin-top: 20px;
+    text-align: center;
 }
 
 #metar-search input, #metar-search button {
@@ -279,19 +174,8 @@ h3 {
     background-color: #000000;
     color: #00FF00;
     border: 1px solid #00FF00;
-    padding: 5px 10px;
+    padding: 5px;
     margin: 5px 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#metar-search button {
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#metar-search button:hover {
-    background-color: #003300;
 }
 
 #metar-taf-display {
@@ -299,57 +183,18 @@ h3 {
     text-align: left;
     white-space: pre-wrap;
     font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
+    font-size: 14px;
     background-color: #000000;
-    border: 1px solid #00FF00;
-    padding: 15px;
+    border: 1px dashed #00FF00;
+    padding: 10px;
     max-height: 200px;
     overflow-y: auto;
-}
-
-#crypto-dashboard {
-    position: fixed;
-    top: 90px;
-    right: 10px;
-    background-color: #000;
-    border: 2px solid #00FF00;
-    padding: 10px;
-    font-size: 16px;
-    max-width: 230px;
-    min-width: 230px;
-    z-index: 1000;
-}
-
-#crypto-dashboard h4 {
-    margin-top: 0;
-    color: #FF00FF;
-    text-align: center;
-    min-width: 230px;
 }
 </style>
 </head>
 <body>
 <div class="container">
-<div id="airport-weather" style="position: absolute; top: 10px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
-    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">LFML Weather</h4>
-    <div id="lfml-metar-taf"></div>
-    
-</div>
-<div id="metar-search" style="position: absolute; top: 360px; left: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px; overflow-y: auto; max-height: 100vh; z-index: 1000;">
-    <h4 style="margin-top: 0; color: #FF00FF; text-align: center;">METAR Search</h4>
-    <div class="airport-weather-controls">
-        <input type="text" id="airport-code" placeholder="Enter airport code">
-        <button onclick="fetchAirportWeather()">Get Weather</button>
-        <button onclick="refreshAirportWeather()">Refresh</button>
-    </div>
-    <div id="metar-taf-display"></div>
-</div>
     <div id="utc-clock"></div>
-    <button id="berkshire-form4-button">Latest Berkshire Form 4</button>
-    <div id="crypto-dashboard" style="position: absolute; top: 90px; right: 10px; background-color: #000; border: 2px solid #00FF00; padding: 10px; font-size: 16px; max-width: 230px; min-width: 230px;">
-    <h4 style="margin-top: 0; color: #FF00FF; text-align: center; min-width: 230px;">Crypto Prices</h4>
-    <div id="crypto-prices"></div>
-</div>
     <h1 class="blink">L8TRUST</h1>
     <div id="market-status"></div>
     <div id="major-indices">
@@ -379,6 +224,19 @@ h3 {
     <div id="rss-feed">
         <h3>Latest News</h3>
         <ul id="news-list"></ul>
+    </div>
+        <div id="airport-weather">
+        <h4>LFML Weather</h4>
+        <div id="lfml-metar-taf"></div>
+    </div>
+    <div id="metar-search">
+        <h4>METAR Search</h4>
+        <div class="airport-weather-controls">
+            <input type="text" id="airport-code" placeholder="Enter airport code">
+            <button onclick="fetchAirportWeather()">Get Weather</button>
+            <button onclick="refreshAirportWeather()">Refresh</button>
+        </div>
+        <div id="metar-taf-display"></div>
     </div>
 
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
@@ -462,7 +320,6 @@ function displayMarketStatus(statusData) {
                 spanElement.style.backgroundColor = changeColor;
                 spanElement.style.color = 'black';
                 spanElement.style.padding = '2px 5px';
-                spanElement.style.borderRadius = '3px';
                 spanElement.style.fontWeight = 'bold';
                 performanceElement.innerHTML = `${indexName}: `;
                 performanceElement.appendChild(spanElement);
@@ -568,7 +425,7 @@ function truncateDescription(description, maxLength) {
                 
                 tickerContent.innerHTML += `
                     <span>${symbol}: $${price} 
-                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
+                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; font-weight: bold;">
                             ${changeSign}${changePercent}%
                         </span>
                     </span>
