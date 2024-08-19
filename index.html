@@ -162,33 +162,47 @@ h3 {
     margin-left: 5px;
 }
 
-#utc-clock, #berkshire-form4-button, #crypto-dashboard, #airport-weather, #metar-search {
+#utc-clock, #berkshire-form4-button, #crypto-dashboard {
     position: static;
     margin-top: 20px;
     text-align: center;
 }
 
-#metar-search input, #metar-search button {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
+#airport-weather, #metar-search {
+    margin-top: 20px;
+    border: 1px dashed #00FF00;
+    padding: 15px;
     background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px;
-    margin: 5px 0;
 }
 
-#metar-taf-display {
-    margin-top: 15px;
-    text-align: left;
+#lfml-metar-taf, #lfml-notam, #metar-taf-display, #notam-display {
+    margin-top: 10px;
     white-space: pre-wrap;
     font-family: "Courier New", Courier, monospace;
     font-size: 14px;
-    background-color: #000000;
-    border: 1px dashed #00FF00;
-    padding: 10px;
     max-height: 200px;
     overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #00FF00;
+}
+
+.weather-section {
+    margin-bottom: 15px;
+}
+
+.weather-section h5 {
+    color: #00FF00;
+    margin-bottom: 5px;
+}
+
+.notam-item {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #00FF00;
+}
+
+.notam-item:last-child {
+    border-bottom: none;
 }
 </style>
 </head>
@@ -225,9 +239,10 @@ h3 {
         <h3>Latest News</h3>
         <ul id="news-list"></ul>
     </div>
-        <div id="airport-weather">
+    <div id="airport-weather">
         <h4>LFML Weather</h4>
         <div id="lfml-metar-taf"></div>
+        <div id="lfml-notam"></div>
     </div>
     <div id="metar-search">
         <h4>METAR Search</h4>
@@ -237,8 +252,8 @@ h3 {
             <button onclick="refreshAirportWeather()">Refresh</button>
         </div>
         <div id="metar-taf-display"></div>
+        <div id="notam-display"></div>
     </div>
-
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
 </div>
 <script>
@@ -264,41 +279,41 @@ h3 {
         }
     }
 
-function displayMarketStatus(statusData) {
-    const marketStatusElement = document.getElementById('market-status');
-    const nyseStatus = statusData.exchanges.nyse;
-    const nasdaqStatus = statusData.exchanges.nasdaq;
+    function displayMarketStatus(statusData) {
+        const marketStatusElement = document.getElementById('market-status');
+        const nyseStatus = statusData.exchanges.nyse;
+        const nasdaqStatus = statusData.exchanges.nasdaq;
 
-    function getStatusColor(status) {
-        switch (status) {
-            case 'open':
-                return '#00FF00';  // Green
-            case 'closed':
-                return '#FF4500';  // Red
-            case 'extended-hours':
-                return '#FFA500';  // Orange
-            default:
-                return '#FFFFFF';  // White (default)
+        function getStatusColor(status) {
+            switch (status) {
+                case 'open':
+                    return '#00FF00';  // Green
+                case 'closed':
+                    return '#FF4500';  // Red
+                case 'extended-hours':
+                    return '#FFA500';  // Orange
+                default:
+                    return '#FFFFFF';  // White (default)
+            }
         }
-    }
 
-    function createStatusSpan(status) {
-        const spanElement = document.createElement('span');
-        spanElement.textContent = status;
-        spanElement.style.backgroundColor = getStatusColor(status);
-        spanElement.style.color = 'black';
-        spanElement.style.padding = '2px 5px';
-        spanElement.style.borderRadius = '3px';
-        spanElement.style.fontWeight = 'bold';
-        return spanElement;
-    }
+        function createStatusSpan(status) {
+            const spanElement = document.createElement('span');
+            spanElement.textContent = status;
+            spanElement.style.backgroundColor = getStatusColor(status);
+            spanElement.style.color = 'black';
+            spanElement.style.padding = '2px 5px';
+            spanElement.style.borderRadius = '3px';
+            spanElement.style.fontWeight = 'bold';
+            return spanElement;
+        }
 
-    marketStatusElement.innerHTML = '';
-    marketStatusElement.appendChild(document.createTextNode('NYSE: '));
-    marketStatusElement.appendChild(createStatusSpan(nyseStatus));
-    marketStatusElement.appendChild(document.createTextNode(' NASDAQ: '));
-    marketStatusElement.appendChild(createStatusSpan(nasdaqStatus));
-}
+        marketStatusElement.innerHTML = '';
+        marketStatusElement.appendChild(document.createTextNode('NYSE: '));
+        marketStatusElement.appendChild(createStatusSpan(nyseStatus));
+        marketStatusElement.appendChild(document.createTextNode(' NASDAQ: '));
+        marketStatusElement.appendChild(createStatusSpan(nasdaqStatus));
+    }
 
     async function fetchIndexPerformance(symbol) {
         const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
@@ -332,7 +347,7 @@ function displayMarketStatus(statusData) {
         }
     }
 
-   async function loadRSSFeed() {
+    async function loadRSSFeed() {
         const rssUrl = 'https://breakingthenews.net/news-feed.xml';
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
         
@@ -375,13 +390,13 @@ function displayMarketStatus(statusData) {
         }
     }
 
-function truncateDescription(description, maxLength) {
-    const strippedDescription = description.replace(/<[^>]*>/g, '');
-    if (strippedDescription.length > maxLength) {
-        return strippedDescription.substring(0, maxLength);
+    function truncateDescription(description, maxLength) {
+        const strippedDescription = description.replace(/<[^>]*>/g, '');
+        if (strippedDescription.length > maxLength) {
+            return strippedDescription.substring(0, maxLength);
+        }
+        return strippedDescription;
     }
-    return strippedDescription;
-}
 
     function formatDate(date) {
         const now = new Date();
@@ -561,8 +576,7 @@ function truncateDescription(description, maxLength) {
         displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
         updateStockTicker();
         loadRSSFeed();
-        fetchCryptoPrices();
-        fetchLFMLWeather();  // Add this line
+        fetchLFMLWeather();
         updateUTCClock();
         countdown = 120;
     }
@@ -575,123 +589,153 @@ function truncateDescription(description, maxLength) {
         }
     }
 
-async function fetchLatestBerkshireForm4() {
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-    const edgarUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=4&dateb=&owner=include&start=0&count=5&output=atom';
-    const fullUrl = proxyUrl + encodeURIComponent(edgarUrl);
+    function getCurrentTimestamp() {
+        return new Date().getTime();
+    }
 
-    try {
-        const response = await fetch(fullUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    async function fetchAirportWeather() {
+        const airportCode = document.getElementById('airport-code').value.toUpperCase();
+        await getAirportWeather(airportCode);
+    }
+
+    async function refreshAirportWeather() {
+        const airportCode = document.getElementById('airport-code').value.toUpperCase();
+        if (airportCode) {
+            await getAirportWeather(airportCode);
+        } else {
+            alert('Please enter an airport code before refreshing.');
         }
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-        
-        const entries = xmlDoc.querySelectorAll('entry');
-        const formDataArray = Array.from(entries).map(entry => {
-            const title = entry.querySelector('title').textContent;
-            const link = entry.querySelector('link').getAttribute('href');
-            const date = new Date(entry.querySelector('updated').textContent);
-            
-            // Extract the accession number and create a direct link to the filing
-            const accessionMatch = link.match(/accession_number=(\d+-\d+-\d+)/);
-            let directLink = link; // Default to the original link
-            if (accessionMatch && accessionMatch[1]) {
-                const accessionNumber = accessionMatch[1].replace(/-/g, '');
-                directLink = `https://www.sec.gov/Archives/edgar/data/1067983/${accessionNumber}/xslF345X03/doc4.xml`;
+    }
+
+    async function getAirportWeather(airportCode) {
+        const metarTafDisplay = document.getElementById('metar-taf-display');
+        const notamDisplay = document.getElementById('notam-display');
+        metarTafDisplay.textContent = 'Loading...';
+        notamDisplay.textContent = 'Loading...';
+
+        const corsProxy = 'https://corsproxy.io/?';
+        const timestamp = getCurrentTimestamp();
+        const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=${airportCode}&format=raw&hours=0&_=${timestamp}`)}`;
+        const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=${airportCode}&format=raw&_=${timestamp}`)}`;
+
+        try {
+            const [metarResponse, tafResponse, notamData] = await Promise.all([
+                fetch(metarUrl),
+                fetch(tafUrl),
+                fetchNOTAM(airportCode)
+            ]);
+
+            if (!metarResponse.ok || !tafResponse.ok) {
+                throw new Error('Failed to fetch weather data');
             }
+
+            const metarText = await metarResponse.text();
+            const tafText = await tafResponse.text();
+
+            let metarTafContent = '';
+            let notamContent = '';
             
-            return { title, link: directLink, date };
-        });
-        
-        return formDataArray;
+            metarTafContent += `<div class="weather-section">
+                <h5>METAR:</h5>
+                ${metarText.trim() || 'Not available'}
+            </div>`;
+
+            metarTafContent += `<div class="weather-section">
+                <h5>TAF:</h5>
+                ${tafText.trim() || 'Not available'}
+            </div>`;
+
+            if (notamData && notamData.length > 0) {
+                notamContent += `<h5>NOTAM:</h5>`;
+                notamData.forEach((notam, index) => {
+                    notamContent += `<div class="notam-item">
+                        ${index + 1}. ${notam.ItemQ}: ${notam.ItemE}
+                    </div>`;
+                });
+            } else {
+                notamContent += 'NOTAM: Not available';
+            }
+
+            metarTafDisplay.innerHTML = metarTafContent;
+            notamDisplay.innerHTML = notamContent;
+        } catch (error) {
+            console.error('Error fetching airport data:', error);
+            metarTafDisplay.textContent = `Error: ${error.message}. Please check the airport code and try again.`;
+            notamDisplay.textContent = '';
+        }
+    }
+
+    async function fetchLFMLWeather() {
+        const displayElement = document.getElementById('lfml-metar-taf');
+        displayElement.textContent = 'Loading LFML weather...';
+
+        const corsProxy = 'https://corsproxy.io/?';
+        const timestamp = getCurrentTimestamp();
+        const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=LFML&format=raw&hours=0&_=${timestamp}`)}`;
+        const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=LFML&format=raw&_=${timestamp}`)}`;
+
+        try {
+            const [metarResponse, tafResponse, notamData] = await Promise.all([
+                fetch(metarUrl),
+                fetch(tafUrl),
+                fetchNOTAM('LFML')
+            ]);
+
+            if (!metarResponse.ok || !tafResponse.ok) {
+                throw new Error('Failed to fetch LFML weather data');
+            }
+
+            const metarText = await metarResponse.text();
+            const tafText = await tafResponse.text();
+
+            let content = '';
+            
+            if (metarText.trim()) {
+                content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
+            } else {
+                content += `<strong>METAR:</strong> Not available\n\n`;
+            }
+
+            if (tafText.trim()) {
+                content += `<strong>TAF:</strong>\n${tafText.trim()}\n\n`;
+            } else {
+                content += `<strong>TAF:</strong> Not available\n\n`;
+            }
+
+            if (notamData && notamData.length > 0) {
+                content += `<strong>NOTAM:</strong>\n`;
+                notamData.forEach((notam, index) => {
+                    content += `${index + 1}. ${notam.ItemQ}: ${notam.ItemE}\n`;
+                });
+            } else {
+                content += `<strong>NOTAM:</strong> Not available`;
+            }
+
+            displayElement.innerHTML = content;
+        } catch (error) {
+            console.error('Error fetching LFML data:', error);
+            displayElement.textContent = `Error: ${error.message}. Please try again later.`;
+        }
+    }
+
+    async function fetchNOTAM(airportCode) {
+    const apiUrl = `https://api.autorouter.aero/v1.0/notam?itemas=["${airportCode}"]&offset=0&limit=10`;
+    const corsProxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+    try {
+        const response = await fetch(corsProxyUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch NOTAM data');
+        }
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error('Error fetching Berkshire Form 4:', error);
+        console.error('Error fetching NOTAM:', error);
         return null;
     }
 }
 
-function displayForm4Popup(formDataArray) {
-    const popup = document.createElement('div');
-    popup.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #000000;
-        border: 2px solid #00FF00;
-        padding: 20px;
-        z-index: 1000;
-        color: #00FF00;
-        font-family: "Courier New", Courier, monospace;
-        max-height: 80vh;
-        overflow-y: auto;
-        width: 80%;
-        max-width: 600px;
-    `;
-
-    let content = `
-        <div style="position: relative;">
-            <h3 style="margin-top: 0;">Latest Berkshire Hathaway Form 4 Filings</h3>
-            <button id="close-popup-x" style="
-                position: absolute;
-                top: -10px;
-                right: -10px;
-                background-color: #000000;
-                color: #00FF00;
-                border: 1px solid #00FF00;
-                width: 25px;
-                height: 25px;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 16px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            ">X</button>
-        </div>
-    `;
-
-    formDataArray.forEach((formData, index) => {
-        content += `
-            <div style="margin-bottom: 15px; border-bottom: 1px solid #00FF00; padding-bottom: 10px;">
-                <p><strong>Title:</strong> ${formData.title}</p>
-                <p><strong>Filed on:</strong> ${formData.date.toLocaleDateString()}</p>
-                <a href="${formData.link}" target="_blank" style="color: #00FF00;">View Full Form</a>
-            </div>
-        `;
-    });
-
-    content += `
-        <button id="close-popup" style="
-            background-color: #000000;
-            color: #00FF00;
-            border: 1px solid #00FF00;
-            padding: 5px 10px;
-            margin-top: 10px;
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
-        ">Close</button>
-    `;
-
-    popup.innerHTML = content;
-    document.body.appendChild(popup);
-
-    document.getElementById('close-popup').addEventListener('click', () => {
-        document.body.removeChild(popup);
-    });
-
-    document.getElementById('close-popup-x').addEventListener('click', () => {
-        document.body.removeChild(popup);
-    });
-}
-
     document.addEventListener('DOMContentLoaded', () => {
         refreshAllData();
-        fetchCryptoPrices();
         setInterval(updateCountdown, 1000);
         setInterval(updateUTCClock, 1000);
         
@@ -715,153 +759,7 @@ function displayForm4Popup(formDataArray) {
                 loadSectorsButton.textContent = 'Load Sector Performance';
             }
         });
-
-        const berkshireButton = document.getElementById('berkshire-form4-button');
-        berkshireButton.addEventListener('click', async () => {
-            berkshireButton.disabled = true;
-            berkshireButton.textContent = 'Loading...';
-            const formDataArray = await fetchLatestBerkshireForm4();
-            if (formDataArray && formDataArray.length > 0) {
-                displayForm4Popup(formDataArray);
-            } else {
-                alert('Error fetching Berkshire Form 4 data. Please try again later.');
-            }
-            berkshireButton.disabled = false;
-            berkshireButton.textContent = 'Latest Berkshire Form 4';
-        });
     });
-function getCurrentTimestamp() {
-    return new Date().getTime();
-}
-
-async function fetchAirportWeather() {
-    const airportCode = document.getElementById('airport-code').value.toUpperCase();
-    await getAirportWeather(airportCode);
-}
-
-async function refreshAirportWeather() {
-    const airportCode = document.getElementById('airport-code').value.toUpperCase();
-    if (airportCode) {
-        await getAirportWeather(airportCode);
-    } else {
-        alert('Please enter an airport code before refreshing.');
-    }
-}
-
-async function getAirportWeather(airportCode) {
-    const displayElement = document.getElementById('metar-taf-display');
-    displayElement.textContent = 'Loading...';
-
-    const corsProxy = 'https://corsproxy.io/?';
-    const timestamp = getCurrentTimestamp();
-    const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=${airportCode}&format=raw&hours=0&_=${timestamp}`)}`;
-    const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=${airportCode}&format=raw&_=${timestamp}`)}`;
-
-    try {
-        const [metarResponse, tafResponse] = await Promise.all([
-            fetch(metarUrl),
-            fetch(tafUrl)
-        ]);
-
-        if (!metarResponse.ok || !tafResponse.ok) {
-            throw new Error('Failed to fetch weather data');
-        }
-
-        const metarText = await metarResponse.text();
-        const tafText = await tafResponse.text();
-
-        let content = `<h4>Weather for ${airportCode}</h4>`;
-        
-        if (metarText.trim()) {
-            content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
-        } else {
-            content += `<strong>METAR:</strong> Not available\n\n`;
-        }
-
-        if (tafText.trim()) {
-            content += `<strong>TAF:</strong>\n${tafText.trim()}`;
-        } else {
-            content += `<strong>TAF:</strong> Not available`;
-        }
-
-        displayElement.innerHTML = content;
-    } catch (error) {
-        console.error('Error fetching airport weather:', error);
-        displayElement.textContent = `Error: ${error.message}. Please check the airport code and try again.`;
-    }
-}
-
-async function fetchLFMLWeather() {
-    const displayElement = document.getElementById('lfml-metar-taf');
-    displayElement.textContent = 'Loading LFML weather...';
-
-    const corsProxy = 'https://corsproxy.io/?';
-    const timestamp = getCurrentTimestamp();
-    const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=LFML&format=raw&hours=0&_=${timestamp}`)}`;
-    const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=LFML&format=raw&_=${timestamp}`)}`;
-
-    try {
-        const [metarResponse, tafResponse] = await Promise.all([
-            fetch(metarUrl),
-            fetch(tafUrl)
-        ]);
-
-        if (!metarResponse.ok || !tafResponse.ok) {
-            throw new Error('Failed to fetch LFML weather data');
-        }
-
-        const metarText = await metarResponse.text();
-        const tafText = await tafResponse.text();
-
-        let content = '';
-        
-        if (metarText.trim()) {
-            content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
-        } else {
-            content += `<strong>METAR:</strong> Not available\n\n`;
-        }
-
-        if (tafText.trim()) {
-            content += `<strong>TAF:</strong>\n${tafText.trim()}`;
-        } else {
-            content += `<strong>TAF:</strong> Not available`;
-        }
-
-        displayElement.innerHTML = content;
-    } catch (error) {
-        console.error('Error fetching LFML weather:', error);
-        displayElement.textContent = `Error: ${error.message}. Please try again later.`;
-    }
-}
-async function fetchCryptoPrices() {
-    const apiKey = '73AD1E2B-B219-4DFC-9636-69C5916545E5';
-    const symbols = ['BTC', 'ETH', 'SOL', 'AVAX'];
-    const cryptoPricesElement = document.getElementById('crypto-prices');
-    cryptoPricesElement.innerHTML = 'Loading...';
-
-    try {
-        const prices = await Promise.all(symbols.map(async (symbol) => {
-            const response = await fetch(`https://rest.coinapi.io/v1/exchangerate/${symbol}/USD`, {
-                headers: { 'X-CoinAPI-Key': apiKey }
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            return { symbol, price: data.rate };
-        }));
-
-        let content = '';
-        prices.forEach(({ symbol, price }) => {
-            content += `<p><strong>${symbol}:</strong> $${price.toFixed(2)}</p>`;
-        });
-
-        cryptoPricesElement.innerHTML = content;
-    } catch (error) {
-        console.error('Error fetching crypto prices:', error);
-        cryptoPricesElement.innerHTML = 'Error fetching prices. Please try again later.';
-    }
-}
 </script>
 </body>
 </html>
