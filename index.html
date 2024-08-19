@@ -37,7 +37,7 @@ h3 {
     text-decoration: underline;
 }
 
-#market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #berkshire-investments {
+#market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #stock-search {
     border: 1px dashed #00FF00;
     padding: 10px;
     margin-top: 20px;
@@ -336,6 +336,7 @@ h3 {
                 spanElement.style.backgroundColor = changeColor;
                 spanElement.style.color = 'black';
                 spanElement.style.padding = '2px 5px';
+                spanElement.style.borderRadius = '3px';
                 spanElement.style.fontWeight = 'bold';
                 performanceElement.innerHTML = `${indexName}: `;
                 performanceElement.appendChild(spanElement);
@@ -441,7 +442,7 @@ h3 {
                 
                 tickerContent.innerHTML += `
                     <span>${symbol}: $${price} 
-                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; font-weight: bold;">
+                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; font-weight: bold; border-radius: 3px;">
                             ${changeSign}${changePercent}%
                         </span>
                     </span>
