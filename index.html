@@ -230,11 +230,59 @@ h3 {
 .notam-item:last-child {
     border-bottom: none;
 }
+#financial-calculator {
+    margin-top: 20px;
+    border: 1px dashed #00FF00;
+    padding: 15px;
+    background-color: #000000;
+}
+
+#world-clock {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #000000;
+}
+
+#financial-calculator input, #financial-calculator button {
+    display: block;
+    margin: 10px 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px;
+}
+
+#mortgage-result {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#clock-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px dashed #00FF00;
+    padding: 10px;
+}
+
+.city-clock {
+    flex: 1 1 200px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #00FF00;
+    text-align: center;
+}
 </style>
 </head>
 <body>
 <div class="container">
     <div id="utc-clock"></div>
+    <div id="world-clock">
+    
+    <div id="clock-container"></div>
+</div>
     <h1 class="blink">L8TRUST</h1>
     <div id="market-status"></div>
     <div id="major-indices">
@@ -280,6 +328,14 @@ h3 {
         <div id="metar-taf-display"></div>
         <div id="notam-display"></div>
     </div>
+    <div id="financial-calculator">
+    <h3>Mortgage Calculator</h3>
+    <input type="number" id="loan-amount" placeholder="Loan Amount ($)">
+    <input type="number" id="interest-rate" placeholder="Annual Interest Rate (%)">
+    <input type="number" id="loan-term" placeholder="Loan Term (years)">
+    <button onclick="calculateMortgage()">Calculate</button>
+    <div id="mortgage-result"></div>
+</div>
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
 </div>
 <script>
@@ -760,10 +816,52 @@ h3 {
         return null;
     }
 }
+function calculateMortgage() {
+    const amount = parseFloat(document.getElementById('loan-amount').value);
+    const rate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12;
+    const term = parseFloat(document.getElementById('loan-term').value) * 12;
+
+    if (isNaN(amount) || isNaN(rate) || isNaN(term)) {
+        document.getElementById('mortgage-result').textContent = 'Please enter valid numbers.';
+        return;
+    }
+
+    const monthlyPayment = (amount * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+    const totalPayment = monthlyPayment * term;
+
+    document.getElementById('mortgage-result').innerHTML = `
+        Monthly Payment: $${monthlyPayment.toFixed(2)}<br>
+        Total Payment: $${totalPayment.toFixed(2)}
+    `;
+}
+function updateWorldClock() {
+    const cities = [
+        { name: 'New York', timezone: 'America/New_York' },
+        { name: 'Paris', timezone: 'Europe/Paris' },
+        { name: 'London', timezone: 'Europe/London' },
+        { name: 'Tokyo', timezone: 'Asia/Tokyo' },
+        { name: 'Sydney', timezone: 'Australia/Sydney' }
+    ];
+
+    const clockContainer = document.getElementById('clock-container');
+    clockContainer.innerHTML = '';
+
+    cities.forEach(city => {
+        const now = new Date();
+        const cityTime = now.toLocaleString('en-US', { timeZone: city.timezone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+        const cityDate = now.toLocaleDateString('en-US', { timeZone: city.timezone, weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        
+        const cityDiv = document.createElement('div');
+        cityDiv.className = 'city-clock';
+        cityDiv.innerHTML = `<strong>${city.name}:</strong> ${cityTime} <small>(${cityDate})</small>`;
+        clockContainer.appendChild(cityDiv);
+    });
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         refreshAllData();
         setInterval(updateCountdown, 1000);
+        setInterval(updateWorldClock, 1000);
         setInterval(updateUTCClock, 1000);
         
         const loadSectorsButton = document.getElementById('load-sectors');
