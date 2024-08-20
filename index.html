@@ -103,15 +103,40 @@ h3 {
 #stock-ticker {
     overflow: hidden;
     white-space: nowrap;
+    background-color: #000000;
+    padding: 10px 0;
     border-top: 1px solid #00FF00;
     border-bottom: 1px solid #00FF00;
-    padding: 5px;
 }
 
 #ticker-content {
     display: inline-block;
     padding-left: 100%;
     animation: ticker 30s linear infinite;
+    font-size: 16px;
+}
+
+#ticker-content span {
+    padding: 0 15px;
+    border-right: 1px solid #333;
+}
+
+#ticker-content span:last-child {
+    border-right: none;
+}
+
+#ticker-content span:nth-child(even) {
+    background-color: #000000;
+}
+
+.stock-change {
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+    padding: 2px 5px;
+    margin-left: 5px;
+    border-radius: 3px;
+    font-weight: bold;
 }
 
 @keyframes ticker {
@@ -441,12 +466,12 @@ h3 {
                 const changeSign = numericChange >= 0 ? '+' : '';
                 
                 tickerContent.innerHTML += `
-                    <span>${symbol}: $${price} 
-                        <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; font-weight: bold; border-radius: 3px;">
-                            ${changeSign}${changePercent}%
-                        </span>
-                    </span>
-                `;
+    <span>${symbol}: $${price} 
+        <span class="stock-change" style="background-color: ${changeColor}; color: black;">
+            ${changeSign}${changePercent}%
+        </span>
+    </span>
+`;
             } catch (error) {
                 console.error(`Error fetching data for ${stock}:`, error);
             }
