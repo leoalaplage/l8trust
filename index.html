@@ -15,6 +15,16 @@ body {
     padding: 0;
 }
 
+.white-mode body {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    background-color: #FFE5CC;
+    color: #000000;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
 .container {
     width: 800px;
     margin: 0 auto;
@@ -22,16 +32,41 @@ body {
     border: 2px solid #00FF00;
 }
 
+.white-mode .container {
+    width: 800px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #000000;
+}
+
 h1 {
     text-align: center;
     font-size: 36px;
     color: #FFFF00;
-    text-shadow: 2px 2px #FF00FF;
+    text-shadow: 2px 2px #000000;
+    margin-bottom: 20px;
+}
+
+.white-mode h1 {
+    text-align: center;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 36px;
+    color: #FF00FF;
+    text-shadow: 2px 2px #FFFF00;
     margin-bottom: 20px;
 }
 
 h3 {
     color: #FF00FF;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: underline;
+}
+
+.white-mode h3 {
+    color: #000000;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
     text-align: center;
     margin-top: 20px;
     text-decoration: underline;
@@ -43,6 +78,21 @@ h3 {
     margin-top: 20px;
     background-color: #000000;
 }
+
+.white-mode #market-status, 
+.white-mode #major-indices, 
+.white-mode #rss-feed, 
+.white-mode #stock-ticker, 
+.white-mode #sector-performance, 
+.white-mode #stock-info, 
+.white-mode #stock-search {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    border: 1px dashed #000000;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #FFE5CC;
+}
+
 
 #market-status {
     text-align: center;
@@ -68,6 +118,14 @@ h3 {
     color: #FFFFFF;
 }
 
+.white-mode #refresh-info {
+    text-align: center;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 14px;
+    margin-top: 20px;
+    color: #000000;
+}
+
 #rss-feed {
     max-height: 300px;
     overflow-y: auto;
@@ -84,6 +142,12 @@ h3 {
 
 #news-list a {
     color: #00FF00;
+    text-decoration: none;
+}
+
+.white-mode #news-list a {
+    color: #000000;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
     text-decoration: none;
 }
 
@@ -109,6 +173,16 @@ h3 {
     border-bottom: 1px solid #00FF00;
 }
 
+.white-mode #stock-ticker {
+    overflow: hidden;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    white-space: nowrap;
+    background-color: #FFE5CC;
+    padding: 10px 0;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+
 #ticker-content {
     display: inline-block;
     padding-left: 100%;
@@ -127,6 +201,11 @@ h3 {
 
 #ticker-content span:nth-child(even) {
     background-color: #000000;
+}
+
+.white-mode #ticker-content span:nth-child(even) {
+    background-color: #FFE5CC;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 .stock-change {
@@ -149,7 +228,13 @@ h3 {
     text-align: center;
 }
 
-#stock-search input, #stock-search button, #load-sectors, #metar-search button, #metar-search input, #metar-tfa-display, #weather-section {
+#stock-search input, 
+#stock-search button, 
+#load-sectors, 
+#metar-search button, 
+#metar-search input, 
+#metar-tfa-display, 
+#weather-section {
     font-family: "Courier New", Courier, monospace;
     font-size: 16px;
     background-color: #000000;
@@ -158,10 +243,40 @@ h3 {
     padding: 5px;
 }
 
-#stock-search button:hover, #load-sectors:hover, #metar-search button:hover{
+.white-mode #stock-search input, 
+.white-mode #stock-search button, 
+.white-mode #load-sectors, 
+.white-mode #metar-search button, 
+.white-mode #metar-search input, 
+.white-mode #metar-tfa-display, 
+.white-mode #weather-section {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 16px;
+    background-color: #FFE5CC;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 5px;
+}
+
+
+#stock-search button:hover, 
+#load-sectors:hover, 
+#financial-calculator button:hover,
+#metar-search button:hover {
     background-color: #003300;
     cursor: pointer;
 }
+
+.white-mode #stock-search button:hover, 
+.white-mode #load-sectors:hover, 
+.white-mode #financial-calculator button:hover,
+.white-mode #metar-search button:hover {
+    background-color: #000000;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    color: #FFE5CC;
+    cursor: pointer;
+}
+
 
 #sector-performance {
     margin-top: 20px;
@@ -189,28 +304,58 @@ h3 {
 }
 
 #utc-clock {
-    position: static;
+    position: relative;
     margin-top: 20px;
     text-align: center;
 }
 
-#airport-weather, #metar-search {
+#airport-weather, 
+#metar-search {
     margin-top: 10px;
     border: 1px dashed #00FF00;
     padding: 15px;
     background-color: #000000;
 }
 
-#lfml-metar-taf, #lfml-notam, #metar-taf-display, #notam-display {
+.white-mode #airport-weather, 
+.white-mode #metar-search {
+    margin-top: 10px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    border: 1px dashed #000000;
+    padding: 15px;
+    background-color: #FFE5CC;
+}
+
+
+#lfml-metar-taf, 
+#lfml-notam, 
+#metar-taf-display, 
+#notam-display {
     margin-top: 10px;
     white-space: pre-wrap;
-    font-family: "Courier New", Courier, monospace;
     font-size: 16px;
     max-height: 300px;
     overflow-y: auto;
     padding: 10px;
     border: 1px solid #00FF00;
+    background-color: #000000; /* Adding background color to match the others */
 }
+
+.white-mode #lfml-metar-taf, 
+.white-mode #lfml-notam, 
+.white-mode #metar-taf-display, 
+.white-mode #notam-display {
+    margin-top: 10px;
+    white-space: pre-wrap;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #000000;
+    background-color: #FFE5CC; /* Adding background color for white mode */
+}
+
 
 .weather-section {
     margin-bottom: 15px;
@@ -221,20 +366,42 @@ h3 {
     margin-bottom: 5px;
 }
 
+.white-mode .weather-section h5 {
+    color: #000000;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    margin-bottom: 5px;
+}
+
 .notam-item {
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 1px dotted #00FF00;
 }
 
+.white-mode .notam-item {
+    margin-bottom: 10px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #000000;
+}
+
 .notam-item:last-child {
     border-bottom: none;
 }
+
 #financial-calculator {
     margin-top: 20px;
     border: 1px dashed #00FF00;
     padding: 15px;
     background-color: #000000;
+}
+
+.white-mode #financial-calculator {
+    margin-top: 20px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    border: 1px dashed #000000;
+    padding: 15px;
+    background-color: #FFE5CC;
 }
 
 #world-clock {
@@ -243,16 +410,37 @@ h3 {
     background-color: #000000;
 }
 
-#financial-calculator input, #financial-calculator button {
+.white-mode #world-clock {
+    margin-top: 20px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    padding: 15px;
+    background-color: #FFE5CC;
+}
+
+#financial-calculator input, 
+#financial-calculator button {
     display: block;
-    margin: 10px 0;
     font-family: "Courier New", Courier, monospace;
+    margin: 10px 0;
     font-size: 16px;
     background-color: #000000;
     color: #00FF00;
     border: 1px solid #00FF00;
     padding: 5px;
 }
+
+.white-mode #financial-calculator input, 
+.white-mode #financial-calculator button {
+    display: block;
+    margin: 10px 0;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 16px;
+    background-color: #FFE5CC;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 5px;
+}
+
 
 #mortgage-result {
     margin-top: 10px;
@@ -267,6 +455,15 @@ h3 {
     padding: 10px;
 }
 
+.white-mode #clock-container {
+    display: flex;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px dashed #000000;
+    padding: 10px;
+}
+
 .city-clock {
     flex: 1 1 200px;
     margin: 5px;
@@ -274,14 +471,89 @@ h3 {
     border: 1px solid #00FF00;
     text-align: center;
 }
+
+.white-mode .city-clock {
+    flex: 1 1 200px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #000000;
+    text-align: center;
+}
+
+/* From Uiverse.io by andrew-demchenk0 */ 
+.switch {
+  --input-focus: #2d8cf0; /* Blue for active state */
+  --font-color: #323232;
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: #323232;
+  position: absolute; /* Position relative to parent */
+  top: 16px;
+  left: 315px;
+  display: flex;
+  align-items: center;
+}
+
+.toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 20px;
+  background-color: var(--bg-color);
+  transition: 0.3s;
+}
+
+.slider:before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--bg-color);
+  box-shadow: 0 3px 0 var(--main-color);
+  transition: 0.3s;
+}
+
+.toggle:checked + .slider {
+  background-color: var(--input-focus); /* Blue background when checked */
+}
+
+.toggle:checked + .slider:before {
+  transform: translateX(30px); /* Move knob to the right */
+}
+
+
 </style>
 </head>
 <body>
-<div class="container">
+    <div class="container">
     <div id="utc-clock"></div>
-    <div id="world-clock">
     
+    <div id="world-clock">
+       
+<label class="switch">
+  <input class="toggle" type="checkbox" id="toggle-mode">
+  <span class="slider"></span>
+</label>
+
     <div id="clock-container"></div>
+    
 </div>
     <h1 class="blink">L8TRUST</h1>
     <div id="market-status"></div>
@@ -885,6 +1157,13 @@ function updateWorldClock() {
             }
         });
     });
+
+
+document.getElementById('toggle-mode').addEventListener('change', function() {
+    document.documentElement.classList.toggle('white-mode', this.checked);
+});
+
 </script>
+<script src="script.js"></script>
 </body>
 </html>
