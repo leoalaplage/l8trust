@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="white-mode">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <title>L8TRUST</title>
 <style>
 body {
@@ -16,13 +17,11 @@ body {
 }
 
 .white-mode body {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    background-color: #FFE5CC;
-    color: #000000;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333333;
     font-size: 16px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
+    line-height: 1.6;
 }
 
 .container {
@@ -33,11 +32,8 @@ body {
 }
 
 .white-mode .container {
-    width: 800px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    margin: 0 auto;
-    padding: 20px;
-    border: 2px solid #000000;
+    font-family: 'Roboto', Arial, sans-serif;
+    border: 2px solid #3498db;
 }
 
 h1 {
@@ -49,12 +45,9 @@ h1 {
 }
 
 .white-mode h1 {
-    text-align: center;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 36px;
-    color: #FF00FF;
-    text-shadow: 2px 2px #FFFF00;
-    margin-bottom: 20px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: #3498db;
+    text-shadow: 1px 1px #e0e0e0;
 }
 
 h3 {
@@ -65,11 +58,8 @@ h3 {
 }
 
 .white-mode h3 {
-    color: #000000;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    text-align: center;
-    margin-top: 20px;
-    text-decoration: underline;
+    color: #2c3e50;
+    font-family: 'Montserrat', Arial, sans-serif;
 }
 
 #market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #stock-search {
@@ -86,11 +76,9 @@ h3 {
 .white-mode #sector-performance, 
 .white-mode #stock-info, 
 .white-mode #stock-search {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    border: 1px dashed #000000;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #FFE5CC;
+    font-family: 'Roboto', Arial, sans-serif;
+    border: 1px solid #3498db;
+    background-color: #ffffff;
 }
 
 
@@ -146,9 +134,7 @@ h3 {
 }
 
 .white-mode #news-list a {
-    color: #000000;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    text-decoration: none;
+    color: #3498db;
 }
 
 #news-list a:hover {
@@ -174,13 +160,9 @@ h3 {
 }
 
 .white-mode #stock-ticker {
-    overflow: hidden;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    white-space: nowrap;
-    background-color: #FFE5CC;
-    padding: 10px 0;
-    border-top: 1px solid #000000;
-    border-bottom: 1px solid #000000;
+    background-color: #ecf0f1;
+    border-top: 1px solid #3498db;
+    border-bottom: 1px solid #3498db;
 }
 
 #ticker-content {
@@ -204,8 +186,7 @@ h3 {
 }
 
 .white-mode #ticker-content span:nth-child(even) {
-    background-color: #FFE5CC;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    background-color: #e8f4fc;
 }
 
 .stock-change {
@@ -250,12 +231,10 @@ h3 {
 .white-mode #metar-search input, 
 .white-mode #metar-tfa-display, 
 .white-mode #weather-section {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 16px;
-    background-color: #FFE5CC;
-    color: #000000;
-    border: 1px solid #000000;
-    padding: 5px;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #3498db;
 }
 
 
@@ -271,10 +250,8 @@ h3 {
 .white-mode #load-sectors:hover, 
 .white-mode #financial-calculator button:hover,
 .white-mode #metar-search button:hover {
-    background-color: #000000;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    color: #FFE5CC;
-    cursor: pointer;
+    background-color: #3498db;
+    color: #ffffff;
 }
 
 
@@ -319,11 +296,8 @@ h3 {
 
 .white-mode #airport-weather, 
 .white-mode #metar-search {
-    margin-top: 10px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    border: 1px dashed #000000;
-    padding: 15px;
-    background-color: #FFE5CC;
+    border: 1px solid #3498db;
+    background-color: #ffffff;
 }
 
 
@@ -345,15 +319,8 @@ h3 {
 .white-mode #lfml-notam, 
 .white-mode #metar-taf-display, 
 .white-mode #notam-display {
-    margin-top: 10px;
-    white-space: pre-wrap;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 16px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #000000;
-    background-color: #FFE5CC; /* Adding background color for white mode */
+    border: 1px solid #3498db;
+    background-color: #ffffff;
 }
 
 
@@ -367,9 +334,7 @@ h3 {
 }
 
 .white-mode .weather-section h5 {
-    color: #000000;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    margin-bottom: 5px;
+    color: #2c3e50;
 }
 
 .notam-item {
@@ -379,10 +344,7 @@ h3 {
 }
 
 .white-mode .notam-item {
-    margin-bottom: 10px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    padding-bottom: 5px;
-    border-bottom: 1px dotted #000000;
+    border-bottom: 1px dotted #3498db;
 }
 
 .notam-item:last-child {
@@ -397,11 +359,8 @@ h3 {
 }
 
 .white-mode #financial-calculator {
-    margin-top: 20px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    border: 1px dashed #000000;
-    padding: 15px;
-    background-color: #FFE5CC;
+    border: 1px solid #3498db;
+    background-color: #ffffff;
 }
 
 #world-clock {
@@ -414,7 +373,7 @@ h3 {
     margin-top: 20px;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
     padding: 15px;
-    background-color: #FFE5CC;
+    background-color: #f5f7fa;
 }
 
 #financial-calculator input, 
@@ -431,17 +390,40 @@ h3 {
 
 .white-mode #financial-calculator input, 
 .white-mode #financial-calculator button {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #3498db;
+}
+
+#toggle-mortgage-calculator {
     display: block;
-    margin: 10px 0;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-family: "Courier New", Courier, monospace;
     font-size: 16px;
-    background-color: #FFE5CC;
-    color: #000000;
-    border: 1px solid #000000;
-    padding: 5px;
+    background-color: #000000;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px 10px;
+    margin: 10px 0;
+    cursor: pointer;
 }
 
 
+.white-mode #toggle-mortgage-calculator {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #3498db;
+}
+
+#toggle-mortgage-calculator:hover {
+    background-color: #003300;
+}
+
+.white-mode #toggle-mortgage-calculator:hover {
+    background-color: #3498db;
+    color: #ffffff;
+}
 #mortgage-result {
     margin-top: 10px;
     font-weight: bold;
@@ -456,12 +438,8 @@ h3 {
 }
 
 .white-mode #clock-container {
-    display: flex;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    border: 1px dashed #000000;
-    padding: 10px;
+    border: 1px solid #3498db;
+     background-color: #ffffff;
 }
 
 .city-clock {
@@ -473,27 +451,30 @@ h3 {
 }
 
 .white-mode .city-clock {
-    flex: 1 1 200px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid #000000;
-    text-align: center;
+    border: 1px solid #3498db;
+    background-color: #ffffff;
 }
 
 /* From Uiverse.io by andrew-demchenk0 */ 
 .switch {
-  --input-focus: #2d8cf0; /* Blue for active state */
+  --input-focus: #2d8cf0;
   --font-color: #323232;
   --font-color-sub: #666;
   --bg-color: #fff;
   --bg-color-alt: #666;
   --main-color: #323232;
-  position: absolute; /* Position relative to parent */
+  position: absolute;
   top: 16px;
   left: 315px;
   display: flex;
   align-items: center;
+}
+
+/* Hide the switch on mobile screens */
+@media (max-width: 768px) {
+  .switch {
+    display: none;
+  }
 }
 
 .toggle {
@@ -538,7 +519,22 @@ h3 {
   transform: translateX(30px); /* Move knob to the right */
 }
 
+#windguru-widget {
+    margin-top: 20px;
+    border: 1px dashed #00FF00;
+    padding: 15px;
+    background-color: #000000;
+}
 
+.white-mode #windguru-widget {
+    border: 1px solid #3498db;
+    background-color: #ffffff;
+}
+
+#windguru-widget h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
 </style>
 </head>
 <body>
@@ -600,14 +596,22 @@ h3 {
         <div id="metar-taf-display"></div>
         <div id="notam-display"></div>
     </div>
-    <div id="financial-calculator">
-    <h3>Mortgage Calculator</h3>
-    <input type="number" id="loan-amount" placeholder="Loan Amount ($)">
-    <input type="number" id="interest-rate" placeholder="Annual Interest Rate (%)">
-    <input type="number" id="loan-term" placeholder="Loan Term (years)">
-    <button onclick="calculateMortgage()">Calculate</button>
-    <div id="mortgage-result"></div>
-</div>
+
+<div id="windguru-widget">
+        <h3>Windguru Forecast</h3>
+        <div id="wg_fwdg_579_100_1724343485220"></div>
+    </div>
+<div id="financial-calculator-section">
+    <button id="toggle-mortgage-calculator">Show Mortgage Calculator</button>
+    <div id="financial-calculator" style="display: none;">
+        <h3>Mortgage Calculator</h3>
+        <input type="number" id="loan-amount" placeholder="Loan Amount ($)">
+        <input type="number" id="interest-rate" placeholder="Annual Interest Rate (%)">
+        <input type="number" id="loan-term" placeholder="Loan Term (years)">
+        <button onclick="calculateMortgage()">Calculate</button>
+        <div id="mortgage-result"></div>
+    </div>
+</div>   
     <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
 </div>
 <script>
@@ -1163,6 +1167,51 @@ document.getElementById('toggle-mode').addEventListener('change', function() {
     document.documentElement.classList.toggle('white-mode', this.checked);
 });
 
+id="wg_fwdg_579_100_1724343485220">
+(function (window, document) {
+  var loader = function () {
+    var arg = ["s=579" ,"m=100","uid=wg_fwdg_579_100_1724343485220" ,"wj=knots" ,"tj=c" ,"waj=m" ,"tij=cm" ,"odh=0" ,"doh=24" ,"fhours=240" ,"hrsm=2" ,"vt=forecasts" ,"lng=en" ,"idbs=1" ,"ts=1" ,"p=WINDSPD,GUST,SMER,TMP,CDC,TCDC,APCP1s"];
+    var script = document.createElement("script");
+    var tag = document.getElementsByTagName("script")[0];
+    script.src = "https://www.windguru.cz/js/widget.php?"+(arg.join("&"));
+    tag.parentNode.insertBefore(script, tag);
+  };
+  window.addEventListener ? window.addEventListener("load", loader, false) : window.attachEvent("onload", loader);
+})(window, document);
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (existing code) ...
+
+    const toggleMortgageCalculatorButton = document.getElementById('toggle-mortgage-calculator');
+    const financialCalculator = document.getElementById('financial-calculator');
+
+    toggleMortgageCalculatorButton.addEventListener('click', () => {
+        if (financialCalculator.style.display === 'none') {
+            financialCalculator.style.display = 'block';
+            toggleMortgageCalculatorButton.textContent = 'Hide Mortgage Calculator';
+        } else {
+            financialCalculator.style.display = 'none';
+            toggleMortgageCalculatorButton.textContent = 'Show Mortgage Calculator';
+        }
+    });
+
+    // ... (rest of your existing code) ...
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (existing code) ...
+
+    const toggleModeCheckbox = document.getElementById('toggle-mode');
+    
+    // Set initial state of the checkbox
+    toggleModeCheckbox.checked = true;
+
+    toggleModeCheckbox.addEventListener('change', function() {
+        document.documentElement.classList.toggle('white-mode', this.checked);
+    });
+
+    // ... (rest of your existing code) ...
+});
 </script>
 <script src="script.js"></script>
 </body>
