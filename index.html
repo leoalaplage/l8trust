@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="white-mode">
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -115,7 +115,7 @@ h3 {
 }
 
 #rss-feed {
-    max-height: 300px;
+    max-height: 600px;
     overflow-y: auto;
 }
 
@@ -551,6 +551,39 @@ h3 {
 #crypto-widget h3 {
     margin-bottom: 10px;
 }
+
+#breaking-news-banner {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.white-mode #breaking-news-banner {
+    background-color: #3498db;
+    color: #FFFFFF;
+}
+
+#breaking-news-list {
+    display: inline-block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    animation: scroll-left 50s linear infinite;
+}
+
+#breaking-news-list li {
+    display: inline-block;
+    margin-right: 50px;
+}
+
+@keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
 </style>
 </head>
 <body>
@@ -558,14 +591,12 @@ h3 {
     <div id="utc-clock"></div>
     
     <div id="world-clock">
-       
-<label class="switch">
-  <input class="toggle" type="checkbox" id="toggle-mode">
-  <span class="slider"></span>
-</label>
+      
 
     <div id="clock-container"></div>
-    
+<div id="breaking-news-banner">
+        <ul id="breaking-news-list"></ul>
+    </div>    
 </div>
     <h1 class="blink">L8TRUST</h1>
     <div id="market-status"></div>
@@ -738,48 +769,58 @@ h3 {
         }
     }
 
-    async function loadRSSFeed() {
-        const rssUrl = 'https://breakingthenews.net/news-feed.xml';
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+async function loadRSSFeed() {
+    const rssUrl = 'https://breakingthenews.net/news-feed.xml';
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+    
+    try {
+        const response = await fetch(proxyUrl);
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
         
-        try {
-            const response = await fetch(proxyUrl);
-            const xmlText = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+        const items = xmlDoc.querySelectorAll('item');
+        const newsList = document.getElementById('news-list');
+        const breakingNewsList = document.getElementById('breaking-news-list');
+        newsList.innerHTML = '';
+        breakingNewsList.innerHTML = '';
+        
+        items.forEach((item, index) => {
+            const title = item.querySelector('title').textContent;
+            const link = item.querySelector('link').textContent;
+            const pubDate = new Date(item.querySelector('pubDate').textContent);
+            const description = item.querySelector('description').textContent;
             
-            const items = xmlDoc.querySelectorAll('item');
-            const newsList = document.getElementById('news-list');
-            newsList.innerHTML = '';
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = link;
+            a.textContent = title;
             
-            items.forEach(item => {
-                const title = item.querySelector('title').textContent;
-                const link = item.querySelector('link').textContent;
-                const pubDate = new Date(item.querySelector('pubDate').textContent);
-                const description = item.querySelector('description').textContent;
-                
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = link;
-                a.textContent = title;
-                
-                const descriptionSpan = document.createElement('span');
-                descriptionSpan.innerHTML = truncateDescription(description, 100);
-                
-                const timestampSpan = document.createElement('span');
-                timestampSpan.className = 'news-timestamp';
-                timestampSpan.textContent = formatDate(pubDate);
-                
-                li.appendChild(a);
-                li.appendChild(descriptionSpan);
-                li.appendChild(timestampSpan);
-                newsList.appendChild(li);
-            });
-        } catch (error) {
-            console.error('Error fetching RSS feed:', error);
-            document.getElementById('news-list').innerHTML = '<li>Error loading news feed. Please try again later.</li>';
-        }
+            const descriptionSpan = document.createElement('span');
+            descriptionSpan.innerHTML = truncateDescription(description, 100);
+            
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'news-timestamp';
+            timestampSpan.textContent = formatDate(pubDate);
+            
+            li.appendChild(a);
+            li.appendChild(descriptionSpan);
+            li.appendChild(timestampSpan);
+            newsList.appendChild(li);
+
+            // Add the first 5 items to the breaking news banner
+            if (index < 5) {
+                const breakingLi = document.createElement('li');
+                breakingLi.textContent = title;
+                breakingNewsList.appendChild(breakingLi);
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching RSS feed:', error);
+        document.getElementById('news-list').innerHTML = '<li>Error loading news feed. Please try again later.</li>';
+        document.getElementById('breaking-news-list').innerHTML = '<li>Error loading breaking news.</li>';
     }
+}
 
     function truncateDescription(description, maxLength) {
         const strippedDescription = description.replace(/<[^>]*>/g, '');
