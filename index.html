@@ -555,11 +555,12 @@ h3 {
 #breaking-news-banner {
     background-color: #FF0000;
     color: #FFFFFF;
-    padding: 10px;
+    padding: 10px 0;
     margin-top: 20px;
     margin-bottom: 0px;
     overflow: hidden;
     white-space: nowrap;
+    position: relative;
 }
 
 .white-mode #breaking-news-banner {
@@ -567,17 +568,38 @@ h3 {
     color: #FFFFFF;
 }
 
+#breaking-news-banner::before {
+    content: "BREAKING NEWS";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 10px;
+    background-color: #990000;
+    color: #FFFFFF;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+
+.white-mode #breaking-news-banner::before {
+    background-color: #2980b9;
+}
+
 #breaking-news-list {
     display: inline-block;
     list-style-type: none;
+    text-transform: uppercase;
     margin: 0;
-    padding: 0;
+    padding: 0 0 0 150px;
     animation: scroll-left 50s linear infinite;
 }
 
 #breaking-news-list li {
     display: inline-block;
     margin-right: 50px;
+    font-weight: bold;
 }
 
 @keyframes scroll-left {
