@@ -2,171 +2,262 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL TWEETS - LIVE FEED</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>METAR 80s</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            background-color: #000000;
-            color: #00ff00;
-            font-family: 'VT323', monospace;
-            font-size: 20px;
-            padding: 20px;
-        }
-        
-        .terminal-header {
-            border: 2px solid #00ff00;
-            padding: 15px 20px;
-            background: #001100;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px #00ff00;
+            background-color: #000;
+            color: #0ff;
+            font-family: 'Press Start 2P', cursive;
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-        }
-        
-        .terminal-title {
-            font-size: 32px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #00ff00;
-            animation: flicker 3s infinite;
-        }
-        
-        .terminal-time {
-            font-size: 24px;
-            color: #00cc00;
-        }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
-        }
-        
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 255, 0, 0.03) 50%
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 1000;
-            animation: scan 8s linear infinite;
-        }
-        
-        @keyframes scan {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
-        }
-        
-        .feeds-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .feed-box {
-            border: 2px solid #00ff00;
-            background: #000000;
+            justify-content: center;
             padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-            height: 80vh;
-            overflow: auto;
+            overflow-x: hidden;
         }
-        
-        .feed-box::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        .feed-box::-webkit-scrollbar-track {
-            background: #001100;
-        }
-        
-        .feed-box::-webkit-scrollbar-thumb {
-            background: #00ff00;
-            box-shadow: 0 0 10px #00ff00;
-        }
-        
-        .feed-title {
-            font-size: 28px;
-            color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
-            margin-bottom: 15px;
+
+        .container {
+            width: 100%;
+            max-width: 500px;
             text-align: center;
-            letter-spacing: 2px;
         }
-        
-        .blink {
-            animation: blink 1s step-start infinite;
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+            }
+            to {
+                text-shadow: 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff, 0 0 50px #0ff;
+            }
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            background-color: #000;
+            border: 3px solid #0ff;
+            color: #0ff;
+            text-align: center;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px #0ff;
+            outline: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+        }
+
+        input::placeholder {
+            color: #0ff;
+            opacity: 0.5;
+        }
+
+        input:focus {
+            box-shadow: 0 0 20px #0ff, 0 0 30px #0ff;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #f0f;
+            background-color: #000;
+            box-shadow: 0 0 15px #f0f;
+            min-height: 100px;
+            display: none;
+            word-wrap: break-word;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .airport-code {
+            color: #ff0;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff0;
+        }
+
+        .metar-text {
+            color: #0f0;
+            font-size: 12px;
+            line-height: 1.8;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .error {
+            color: #f00;
+            text-shadow: 0 0 10px #f00;
+        }
+
+        .loading {
+            color: #ff0;
+            animation: blink 1s infinite;
+        }
+
         @keyframes blink {
-            50% { opacity: 0; }
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
         }
-        
-        /* Style pour l'iframe Twitter */
-        iframe {
-            border: 1px solid #00ff00 !important;
-            filter: brightness(0.9) contrast(1.1) hue-rotate(90deg);
+
+        .time {
+            color: #f0f;
+            font-size: 10px;
+            margin-top: 15px;
+            text-shadow: 0 0 5px #f0f;
         }
     </style>
 </head>
 <body>
-    <div class="scanline"></div>
-    
-    <div class="terminal-header">
-        <div class="terminal-title">▓▓▓ TERMINAL TWEETS - LIVE FEED ▓▓▓</div>
-        <div class="terminal-time" id="time">--:--:--</div>
-    </div>
-    
-    <div class="feeds-container">
-        <!-- FEED 1 -->
-        <div class="feed-box">
-            <div class="feed-title">>>> @elonmusk <span class="blink">█</span></div>
-            <a class="twitter-timeline" 
-               data-theme="dark" 
-               data-chrome="noheader nofooter noborders transparent"
-               data-tweet-limit="20"
-               href="https://twitter.com/elonmusk">
-            </a>
-        </div>
+    <div class="container">
+        <h1>METAR 80s</h1>
         
-        <!-- FEED 2 -->
-        <div class="feed-box">
-            <div class="feed-title">>>> @NASA <span class="blink">█</span></div>
-            <a class="twitter-timeline" 
-               data-theme="dark" 
-               data-chrome="noheader nofooter noborders transparent"
-               data-tweet-limit="20"
-               href="https://twitter.com/NASA">
-            </a>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="AGP / LEMG" maxlength="4" autocomplete="off">
         </div>
+
+        <div id="result" class="result"></div>
     </div>
 
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    
     <script>
-        // Mise à jour de l'heure
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('time').textContent = now.toLocaleTimeString('fr-FR');
+        // Base de données IATA vers ICAO (principaux aéroports européens + autres)
+        const iataToIcao = {
+            // Espagne
+            'AGP': 'LEMG', 'MAD': 'LEMD', 'BCN': 'LEBL', 'SVQ': 'LEZL', 'VLC': 'LEVC',
+            'PMI': 'LEPA', 'ALC': 'LEAL', 'BIO': 'LEBB', 'IBZ': 'LEIB', 'SCQ': 'LEST',
+            'TFN': 'GCXO', 'TFS': 'GCTS', 'LPA': 'GCLP', 'ACE': 'GCRR', 'FUE': 'GCFV',
+            'VGO': 'LEVX', 'GRO': 'LEGE', 'REU': 'LERE', 'SDR': 'LEXJ', 'OVD': 'LEAS',
+            // France
+            'CDG': 'LFPG', 'ORY': 'LFPO', 'NCE': 'LFMN', 'LYS': 'LFLL', 'MRS': 'LFML',
+            'TLS': 'LFBO', 'NTE': 'LFRS', 'BSL': 'LFSB', 'BVA': 'LFOB', 'BOD': 'LFBD',
+            // UK/Irlande
+            'LHR': 'EGLL', 'LGW': 'EGKK', 'MAN': 'EGCC', 'STN': 'EGSS', 'EDI': 'EGPH',
+            'BHX': 'EGBB', 'DUB': 'EIDW', 'BFS': 'EGAA', 'GLA': 'EGPF', 'LTN': 'EGGW',
+            // Allemagne
+            'FRA': 'EDDF', 'MUC': 'EDDM', 'DUS': 'EDDL', 'TXL': 'EDDT', 'HAM': 'EDDH',
+            'CGN': 'EDDK', 'STR': 'EDDS', 'HHN': 'EDNY', 'NUE': 'EDDN', 'BER': 'EDDB',
+            // Italie
+            'FCO': 'LIRF', 'MXP': 'LIMC', 'VCE': 'LIPZ', 'BGY': 'LIME', 'NAP': 'LIRN',
+            'CIA': 'LIRA', 'BLQ': 'LIPE', 'CTA': 'LICC', 'PSA': 'LIRP', 'VRN': 'LIPX',
+            // Portugal
+            'LIS': 'LPPT', 'OPO': 'LPPR', 'FAO': 'LPFR', 'FNC': 'LPMA', 'PDL': 'LPAZ',
+            // Benelux
+            'AMS': 'EHAM', 'BRU': 'EBBR', 'LUX': 'ELLX', 'EIN': 'EHEH', 'RTM': 'EHRD',
+            // Europe de l'Est
+            'WAW': 'EPWA', 'PRG': 'LKPR', 'BUD': 'LHBP', 'VIE': 'LOWW', 'OTP': 'LROP',
+            'SOF': 'LBSF', 'ATH': 'LGAV', 'BEG': 'LYBE', 'ZAG': 'LDZA', 'SKG': 'LGTS',
+            // Scandinavie
+            'ARN': 'ESSA', 'CPH': 'EKCH', 'OSL': 'ENGM', 'HEL': 'EFHK', 'GOT': 'ESGG',
+            // Suisse/Autriche
+            'ZRH': 'LSZH', 'GVA': 'LSGG', 'BSL': 'LFSB', 'INN': 'LOWI', 'SZG': 'LOWS',
+            // Maroc/Afrique du Nord
+            'CMN': 'GMMN', 'RAK': 'GMMX', 'TNG': 'GMTT', 'FEZ': 'GMFF', 'AGD': 'GMAD',
+            'ALG': 'DAAG', 'TUN': 'DTTA', 'CAI': 'HECA',
+            // USA (principaux)
+            'JFK': 'KJFK', 'LAX': 'KLAX', 'ORD': 'KORD', 'MIA': 'KMIA', 'DFW': 'KDFW',
+            'SFO': 'KSFO', 'LAS': 'KLAS', 'SEA': 'KSEA', 'MCO': 'KMCO', 'EWR': 'KEWR',
+            'BOS': 'KBOS', 'ATL': 'KATL', 'IAH': 'KIAH', 'DEN': 'KDEN', 'PHX': 'KPHX',
+        };
+
+        const searchInput = document.getElementById('searchInput');
+        const resultDiv = document.getElementById('result');
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchMetar();
+            }
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        async function searchMetar() {
+            let code = searchInput.value.trim().toUpperCase();
+            
+            if (code.length < 3) {
+                showError('Code trop court');
+                return;
+            }
+
+            // Conversion IATA vers ICAO si nécessaire
+            let icaoCode = code;
+            if (code.length === 3 && iataToIcao[code]) {
+                icaoCode = iataToIcao[code];
+            } else if (code.length === 3) {
+                showError('Code IATA inconnu');
+                return;
+            }
+
+            showLoading(icaoCode);
+
+            try {
+                const response = await fetch(`https://aviationweather.gov/api/data/metar?ids=${icaoCode}&format=json`);
+                
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    displayMetar(data[0]);
+                } else {
+                    showError('Aucun METAR trouvé');
+                }
+            } catch (error) {
+                showError('Erreur: ' + error.message);
+            }
         }
-        setInterval(updateTime, 1000);
-        updateTime();
+
+        function displayMetar(metar) {
+            const observationTime = new Date(metar.obsTime);
+            const timeString = observationTime.toUTCString();
+
+            resultDiv.innerHTML = `
+                <div class="airport-code">${metar.icaoId}</div>
+                <div class="metar-text">${metar.rawOb}</div>
+                <div class="time">${timeString}</div>
+            `;
+            resultDiv.classList.add('show');
+        }
+
+        function showLoading(code) {
+            resultDiv.innerHTML = `<div class="loading">CHARGEMENT ${code}...</div>`;
+            resultDiv.classList.add('show');
+        }
+
+        function showError(message) {
+            resultDiv.innerHTML = `<div class="error">${message}</div>`;
+            resultDiv.classList.add('show');
+        }
     </script>
 </body>
 </html>
+
