@@ -136,10 +136,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>METAR</h1>
+        <h1>METAR 80s</h1>
         
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="" maxlength="4" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="AGP / LEMG" maxlength="4" autocomplete="off">
         </div>
 
         <div id="result" class="result"></div>
@@ -218,27 +218,33 @@
             showLoading(icaoCode);
 
             try {
-                // Utilisation de AVWX API (gratuit, supporte CORS)
-                const response = await fetch(`https://avwx.rest/api/metar/${icaoCode}?options=info`);
+                // Utilisation de l'API AWC via CORS proxy
+                const response = await fetch(`https://corsproxy.io/?https://aviationweather.gov/api/data/metar?ids=${icaoCode}&format=json`);
                 
                 if (!response.ok) {
-                    throw new Error('Aéroport introuvable');
+                    throw new Error('Erreur réseau');
                 }
 
                 const data = await response.json();
-                displayMetar(data);
+
+                if (data && data.length > 0) {
+                    displayMetar(data[0]);
+                } else {
+                    showError('Aucun METAR trouvé');
+                }
             } catch (error) {
                 showError('Erreur: ' + error.message);
             }
         }
 
-        function displayMetar(data) {
-            const observationTime = data.time ? data.time.dt : 'N/A';
+        function displayMetar(metar) {
+            const observationTime = new Date(metar.obsTime);
+            const timeString = observationTime.toUTCString();
 
             resultDiv.innerHTML = `
-                <div class="airport-code">${data.station}</div>
-                <div class="metar-text">${data.raw}</div>
-                <div class="time">${observationTime}</div>
+                <div class="airport-code">${metar.icaoId}</div>
+                <div class="metar-text">${metar.rawOb}</div>
+                <div class="time">${timeString}</div>
             `;
             resultDiv.classList.add('show');
         }
@@ -255,3 +261,4 @@
     </script>
 </body>
 </html>
+
