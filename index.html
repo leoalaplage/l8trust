@@ -17,36 +17,36 @@
             background-color: #000000;
             color: #00ff00;
             font-family: 'VT323', monospace;
-            overflow: hidden;
             font-size: 20px;
+            padding: 20px;
         }
         
         .terminal-header {
             border: 2px solid #00ff00;
-            border-bottom: none;
-            padding: 10px 20px;
+            padding: 15px 20px;
             background: #001100;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px #00ff00;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 0 20px #00ff00;
         }
         
         .terminal-title {
-            font-size: 28px;
-            letter-spacing: 2px;
+            font-size: 32px;
+            letter-spacing: 3px;
             text-shadow: 0 0 10px #00ff00;
             animation: flicker 3s infinite;
         }
         
         .terminal-time {
-            font-size: 20px;
+            font-size: 24px;
             color: #00cc00;
         }
         
         @keyframes flicker {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            50% { opacity: 0.85; }
         }
         
         .scanline {
@@ -58,7 +58,7 @@
             background: linear-gradient(
                 to bottom,
                 transparent 50%,
-                rgba(0, 255, 0, 0.05) 50%
+                rgba(0, 255, 0, 0.03) 50%
             );
             background-size: 100% 4px;
             pointer-events: none;
@@ -71,86 +71,43 @@
             100% { background-position: 0 100%; }
         }
         
-        .terminal-body {
+        .feeds-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .feed-box {
             border: 2px solid #00ff00;
-            border-top: none;
-            height: calc(100vh - 70px);
-            padding: 20px;
             background: #000000;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px #00ff00;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            height: 80vh;
+            overflow: auto;
         }
         
-        .tweet-feed {
-            animation: scroll-up 0.5s linear infinite;
+        .feed-box::-webkit-scrollbar {
+            width: 10px;
         }
         
-        @keyframes scroll-up {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-2px); }
-        }
-        
-        .tweet {
-            border: 1px solid #00ff00;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: rgba(0, 255, 0, 0.05);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-            animation: tweet-appear 0.5s ease-in;
-        }
-        
-        @keyframes tweet-appear {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        
-        .tweet-header-info {
-            color: #00ff00;
-            margin-bottom: 10px;
-            font-size: 18px;
-            text-shadow: 0 0 5px #00ff00;
-        }
-        
-        .tweet-username {
-            color: #00cc00;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .tweet-date {
-            color: #008800;
-            margin-left: 15px;
-        }
-        
-        .tweet-text {
-            line-height: 1.6;
-            margin: 10px 0;
-            font-size: 20px;
-        }
-        
-        .tweet-image {
-            width: 100%;
-            max-width: 500px;
-            height: auto;
-            margin-top: 10px;
-            border: 1px solid #00ff00;
-            filter: brightness(0.8) contrast(1.2);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-        }
-        
-        .status-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .feed-box::-webkit-scrollbar-track {
             background: #001100;
-            border-top: 2px solid #00ff00;
-            padding: 5px 20px;
-            display: flex;
-            justify-content: space-between;
-            z-index: 100;
-            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .feed-box::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .feed-title {
+            font-size: 28px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
         }
         
         .blink {
@@ -161,11 +118,10 @@
             50% { opacity: 0; }
         }
         
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 28px;
-            text-shadow: 0 0 10px #00ff00;
+        /* Style pour l'iframe Twitter */
+        iframe {
+            border: 1px solid #00ff00 !important;
+            filter: brightness(0.9) contrast(1.1) hue-rotate(90deg);
         }
     </style>
 </head>
@@ -177,27 +133,33 @@
         <div class="terminal-time" id="time">--:--:--</div>
     </div>
     
-    <div class="terminal-body">
-        <div id="tweet-container">
-            <div class="loading">>> CHARGEMENT DES DONNÉES<span class="blink">_</span></div>
+    <div class="feeds-container">
+        <!-- FEED 1 -->
+        <div class="feed-box">
+            <div class="feed-title">>>> @elonmusk <span class="blink">█</span></div>
+            <a class="twitter-timeline" 
+               data-theme="dark" 
+               data-chrome="noheader nofooter noborders transparent"
+               data-tweet-limit="20"
+               href="https://twitter.com/elonmusk">
+            </a>
+        </div>
+        
+        <!-- FEED 2 -->
+        <div class="feed-box">
+            <div class="feed-title">>>> @NASA <span class="blink">█</span></div>
+            <a class="twitter-timeline" 
+               data-theme="dark" 
+               data-chrome="noheader nofooter noborders transparent"
+               data-tweet-limit="20"
+               href="https://twitter.com/NASA">
+            </a>
         </div>
     </div>
-    
-    <div class="status-bar">
-        <div>STATUS: <span class="blink">█</span> CONNECTED</div>
-        <div>FEED: <span id="tweet-count">0</span> TWEETS</div>
-    </div>
 
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    
     <script>
-        // CONFIGURATION - Modifiez ces comptes Twitter
-        const TWITTER_ACCOUNTS = ['elonmusk', 'NASA', 'OpenAI', 'TechCrunch'];
-        const REFRESH_INTERVAL = 60000; // 60 secondes
-        const SCROLL_SPEED = 50; // pixels par seconde
-        
-        let tweets = [];
-        let tweetCount = 0;
-        let scrollPosition = 0;
-        
         // Mise à jour de l'heure
         function updateTime() {
             const now = new Date();
@@ -205,142 +167,6 @@
         }
         setInterval(updateTime, 1000);
         updateTime();
-        
-        // Charger les tweets via RSS (méthode gratuite)
-        async function loadTweets() {
-            const container = document.getElementById('tweet-container');
-            tweets = [];
-            
-            for (const account of TWITTER_ACCOUNTS) {
-                try {
-                    // Utiliser un proxy CORS gratuit + Nitter RSS
-                    const rssUrl = `https://nitter.poast.org/${account}/rss`;
-                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-                    
-                    const response = await fetch(proxyUrl);
-                    const text = await response.text();
-                    
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(text, 'text/xml');
-                    const items = xml.querySelectorAll('item');
-                    
-                    items.forEach((item, index) => {
-                        if (index < 5) { // 5 tweets par compte
-                            const title = item.querySelector('title')?.textContent || '';
-                            const description = item.querySelector('description')?.textContent || '';
-                            const pubDate = item.querySelector('pubDate')?.textContent || '';
-                            
-                            // Extraire les images du contenu HTML
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = description;
-                            const images = Array.from(tempDiv.querySelectorAll('img')).map(img => img.src);
-                            
-                            // Nettoyer le texte
-                            const cleanText = tempDiv.textContent.trim();
-                            
-                            tweets.push({
-                                username: account,
-                                text: cleanText,
-                                date: new Date(pubDate),
-                                images: images
-                            });
-                        }
-                    });
-                } catch (error) {
-                    console.error(`Erreur pour @${account}:`, error);
-                }
-            }
-            
-            // Trier par date
-            tweets.sort((a, b) => b.date - a.date);
-            
-            // Afficher les tweets
-            displayTweets();
-        }
-        
-        function displayTweets() {
-            const container = document.getElementById('tweet-container');
-            container.innerHTML = '';
-            
-            if (tweets.length === 0) {
-                container.innerHTML = '<div class="loading">>> AUCUNE DONNÉE DISPONIBLE<span class="blink">_</span></div>';
-                return;
-            }
-            
-            const feedDiv = document.createElement('div');
-            feedDiv.className = 'tweet-feed';
-            feedDiv.id = 'feed';
-            
-            tweets.forEach(tweet => {
-                const tweetDiv = document.createElement('div');
-                tweetDiv.className = 'tweet';
-                
-                let imagesHtml = '';
-                if (tweet.images && tweet.images.length > 0) {
-                    imagesHtml = tweet.images.map(img => 
-                        `<img src="${img}" class="tweet-image" alt="Image du tweet">`
-                    ).join('');
-                }
-                
-                tweetDiv.innerHTML = `
-                    <div class="tweet-header-info">
-                        <span class="tweet-username">@${tweet.username}</span>
-                        <span class="tweet-date">${formatDate(tweet.date)}</span>
-                    </div>
-                    <div class="tweet-text">${escapeHtml(tweet.text)}</div>
-                    ${imagesHtml}
-                `;
-                
-                feedDiv.appendChild(tweetDiv);
-            });
-            
-            // Dupliquer les tweets pour un scroll infini
-            feedDiv.innerHTML += feedDiv.innerHTML;
-            
-            container.appendChild(feedDiv);
-            tweetCount = tweets.length;
-            document.getElementById('tweet-count').textContent = tweetCount;
-            
-            // Démarrer le scroll
-            startScrolling();
-        }
-        
-        function startScrolling() {
-            const feed = document.getElementById('feed');
-            if (!feed) return;
-            
-            setInterval(() => {
-                scrollPosition += 1;
-                feed.style.transform = `translateY(-${scrollPosition}px)`;
-                
-                // Reset quand on atteint la moitié (boucle infinie)
-                if (scrollPosition >= feed.offsetHeight / 2) {
-                    scrollPosition = 0;
-                }
-            }, SCROLL_SPEED);
-        }
-        
-        function formatDate(date) {
-            const now = new Date();
-            const diff = Math.floor((now - date) / 1000 / 60);
-            
-            if (diff < 1) return 'À L\'INSTANT';
-            if (diff < 60) return `IL Y A ${diff}MIN`;
-            if (diff < 1440) return `IL Y A ${Math.floor(diff / 60)}H`;
-            return date.toLocaleDateString('fr-FR');
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Chargement initial
-        loadTweets();
-        
-        // Rafraîchir périodiquement
-        setInterval(loadTweets, REFRESH_INTERVAL);
     </script>
 </body>
 </html>
