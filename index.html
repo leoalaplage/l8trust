@@ -146,7 +146,7 @@
     </div>
 
     <script>
-        // Base de données IATA vers ICAO (principaux aéroports européens + autres)
+        // Base de données IATA vers ICAO
         const iataToIcao = {
             // Espagne
             'AGP': 'LEMG', 'MAD': 'LEMD', 'BCN': 'LEBL', 'SVQ': 'LEZL', 'VLC': 'LEVC',
@@ -175,7 +175,7 @@
             // Scandinavie
             'ARN': 'ESSA', 'CPH': 'EKCH', 'OSL': 'ENGM', 'HEL': 'EFHK', 'GOT': 'ESGG',
             // Suisse/Autriche
-            'ZRH': 'LSZH', 'GVA': 'LSGG', 'BSL': 'LFSB', 'INN': 'LOWI', 'SZG': 'LOWS',
+            'ZRH': 'LSZH', 'GVA': 'LSGG', 'INN': 'LOWI', 'SZG': 'LOWS',
             // Maroc/Afrique du Nord
             'CMN': 'GMMN', 'RAK': 'GMMX', 'TNG': 'GMTT', 'FEZ': 'GMFF', 'AGD': 'GMAD',
             'ALG': 'DAAG', 'TUN': 'DTTA', 'CAI': 'HECA',
@@ -218,32 +218,27 @@
             showLoading(icaoCode);
 
             try {
-                const response = await fetch(`https://aviationweather.gov/api/data/metar?ids=${icaoCode}&format=json`);
+                // Utilisation de AVWX API (gratuit, supporte CORS)
+                const response = await fetch(`https://avwx.rest/api/metar/${icaoCode}?options=info`);
                 
                 if (!response.ok) {
-                    throw new Error('Erreur réseau');
+                    throw new Error('Aéroport introuvable');
                 }
 
                 const data = await response.json();
-
-                if (data && data.length > 0) {
-                    displayMetar(data[0]);
-                } else {
-                    showError('Aucun METAR trouvé');
-                }
+                displayMetar(data);
             } catch (error) {
                 showError('Erreur: ' + error.message);
             }
         }
 
-        function displayMetar(metar) {
-            const observationTime = new Date(metar.obsTime);
-            const timeString = observationTime.toUTCString();
+        function displayMetar(data) {
+            const observationTime = data.time ? data.time.dt : 'N/A';
 
             resultDiv.innerHTML = `
-                <div class="airport-code">${metar.icaoId}</div>
-                <div class="metar-text">${metar.rawOb}</div>
-                <div class="time">${timeString}</div>
+                <div class="airport-code">${data.station}</div>
+                <div class="metar-text">${data.raw}</div>
+                <div class="time">${observationTime}</div>
             `;
             resultDiv.classList.add('show');
         }
@@ -260,5 +255,3 @@
     </script>
 </body>
 </html>
-
-
