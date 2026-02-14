@@ -1,1338 +1,346 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <title>L8TRUST</title>
-<style>
-body {
-    font-family: "Courier New", Courier, monospace;
-    background-color: #000000;
-    color: #00FF00;
-    font-size: 16px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-}
-
-.white-mode body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: #f5f7fa;
-    color: #333333;
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-.container {
-    width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 2px solid #00FF00;
-}
-
-.white-mode .container {
-    font-family: 'Roboto', Arial, sans-serif;
-    border: 2px solid #3498db;
-}
-
-h1 {
-    text-align: center;
-    font-size: 36px;
-    color: #FFFF00;
-    text-shadow: 2px 2px #000000;
-    margin-bottom: 20px;
-}
-
-.white-mode h1 {
-    font-family: 'Montserrat', Arial, sans-serif;
-    color: #3498db;
-    text-shadow: 1px 1px #e0e0e0;
-}
-
-h3 {
-    color: #FF00FF;
-    text-align: center;
-    margin-top: 20px;
-    text-decoration: underline;
-}
-
-.white-mode h3 {
-    color: #2c3e50;
-    font-family: 'Montserrat', Arial, sans-serif;
-}
-
-#market-status, #major-indices, #rss-feed, #stock-ticker, #sector-performance, #stock-info, #stock-search {
-    border: 1px dashed #00FF00;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #000000;
-}
-
-.white-mode #market-status, 
-.white-mode #major-indices, 
-.white-mode #rss-feed, 
-.white-mode #stock-ticker, 
-.white-mode #sector-performance, 
-.white-mode #stock-info, 
-.white-mode #stock-search {
-    font-family: 'Roboto', Arial, sans-serif;
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-
-#market-status {
-    text-align: center;
-    text-transform: uppercase;
-}
-
-.market-open { color: #00FF00; }
-.market-extended { color: #FFA500; }
-.market-closed { color: #FF0000; }
-
-.blink {
-    animation: blinker 1s step-end infinite;
-}
-
-@keyframes blinker {
-    50% { opacity: 0; }
-}
-
-#refresh-info {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 20px;
-    color: #FFFFFF;
-}
-
-.white-mode #refresh-info {
-    text-align: center;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 14px;
-    margin-top: 20px;
-    color: #000000;
-}
-
-#rss-feed {
-    max-height: 600px;
-    overflow-y: auto;
-}
-
-#news-list {
-    list-style-type: square;
-    padding-left: 20px;
-}
-
-#news-list li {
-    margin-bottom: 10px;
-}
-
-#news-list a {
-    color: #00FF00;
-    text-decoration: none;
-}
-
-.white-mode #news-list a {
-    color: #3498db;
-}
-
-#news-list a:hover {
-    text-decoration: underline;
-}
-
-.news-timestamp {
-    font-size: 0.8em;
-    color: #888;
-}
-
-#major-indices {
-    text-align: center;
-}
-
-#stock-ticker {
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: #000000;
-    padding: 10px 0;
-    border-top: 1px solid #00FF00;
-    border-bottom: 1px solid #00FF00;
-}
-
-.white-mode #stock-ticker {
-    background-color: #ecf0f1;
-    border-top: 1px solid #3498db;
-    border-bottom: 1px solid #3498db;
-}
-
-#ticker-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: ticker 30s linear infinite;
-    font-size: 16px;
-}
-
-#ticker-content span {
-    padding: 0 15px;
-    border-right: 1px solid #333;
-}
-
-#ticker-content span:last-child {
-    border-right: none;
-}
-
-#ticker-content span:nth-child(even) {
-    background-color: #000000;
-}
-
-.white-mode #ticker-content span:nth-child(even) {
-    background-color: #e8f4fc;
-}
-
-.stock-change {
-    display: inline-block;
-    min-width: 30px;
-    text-align: center;
-    padding: 2px 5px;
-    margin-left: 5px;
-    border-radius: 3px;
-    font-weight: bold;
-}
-
-@keyframes ticker {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
-
-#stock-search, {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#stock-search input, 
-#stock-search button, 
-#load-sectors, 
-#metar-search button, 
-#metar-search input, 
-#metar-tfa-display, 
-#weather-section {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px;
-}
-
-.white-mode #stock-search input, 
-.white-mode #stock-search button, 
-.white-mode #load-sectors, 
-.white-mode #metar-search button, 
-.white-mode #metar-search input, 
-.white-mode #metar-tfa-display, 
-.white-mode #weather-section {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #3498db;
-}
-
-
-#stock-search button:hover, 
-#load-sectors:hover, 
-#financial-calculator button:hover,
-#metar-search button:hover {
-    background-color: #003300;
-    cursor: pointer;
-}
-
-.white-mode #stock-search button:hover, 
-.white-mode #load-sectors:hover, 
-.white-mode #financial-calculator button:hover,
-.white-mode #metar-search button:hover {
-    background-color: #3498db;
-    color: #ffffff;
-}
-
-
-#sector-performance {
-    margin-top: 20px;
-}
-
-.sector-bar {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.sector-name {
-    width: 150px;
-    text-align: right;
-    padding-right: 10px;
-}
-
-.bar {
-    height: 10px;
-    transition: width 0.5s ease-in-out;
-}
-
-.performance-value {
-    margin-left: 5px;
-}
-
-#utc-clock {
-    position: relative;
-    margin-top: 20px;
-    text-align: center;
-}
-
-#airport-weather, 
-#metar-search {
-    margin-top: 10px;
-    border: 1px dashed #00FF00;
-    padding: 15px;
-    background-color: #000000;
-}
-
-.white-mode #airport-weather, 
-.white-mode #metar-search {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-
-#lfml-metar-taf, 
-#lfml-notam, 
-#metar-taf-display, 
-#notam-display {
-    margin-top: 10px;
-    white-space: pre-wrap;
-    font-size: 16px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #00FF00;
-    background-color: #000000; /* Adding background color to match the others */
-}
-
-.white-mode #lfml-metar-taf, 
-.white-mode #lfml-notam, 
-.white-mode #metar-taf-display, 
-.white-mode #notam-display {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-
-.weather-section {
-    margin-bottom: 15px;
-}
-
-.weather-section h5 {
-    color: #00FF00;
-    margin-bottom: 5px;
-}
-
-.white-mode .weather-section h5 {
-    color: #2c3e50;
-}
-
-.notam-item {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px dotted #00FF00;
-}
-
-.white-mode .notam-item {
-    border-bottom: 1px dotted #3498db;
-}
-
-.notam-item:last-child {
-    border-bottom: none;
-}
-
-#financial-calculator {
-    margin-top: 20px;
-    border: 1px dashed #00FF00;
-    padding: 15px;
-    background-color: #000000;
-}
-
-.white-mode #financial-calculator {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-#world-clock {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #000000;
-}
-
-.white-mode #world-clock {
-    margin-top: 20px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    padding: 15px;
-    background-color: #f5f7fa;
-}
-
-#financial-calculator input, 
-#financial-calculator button {
-    display: block;
-    font-family: "Courier New", Courier, monospace;
-    margin: 10px 0;
-    font-size: 16px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px;
-}
-
-.white-mode #financial-calculator input, 
-.white-mode #financial-calculator button {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #3498db;
-}
-
-#toggle-mortgage-calculator {
-    display: block;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
-    background-color: #000000;
-    color: #00FF00;
-    border: 1px solid #00FF00;
-    padding: 5px 10px;
-    margin: 10px 0;
-    cursor: pointer;
-}
-
-
-.white-mode #toggle-mortgage-calculator {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #3498db;
-}
-
-#toggle-mortgage-calculator:hover {
-    background-color: #003300;
-}
-
-.white-mode #toggle-mortgage-calculator:hover {
-    background-color: #3498db;
-    color: #ffffff;
-}
-#mortgage-result {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-#clock-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    border: 1px dashed #00FF00;
-    padding: 10px;
-}
-
-.white-mode #clock-container {
-    border: 1px solid #3498db;
-     background-color: #ffffff;
-}
-
-.city-clock {
-    flex: 1 1 200px;
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid #00FF00;
-    text-align: center;
-}
-
-.white-mode .city-clock {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-/* From Uiverse.io by andrew-demchenk0 */ 
-.switch {
-  --input-focus: #2d8cf0;
-  --font-color: #323232;
-  --font-color-sub: #666;
-  --bg-color: #fff;
-  --bg-color-alt: #666;
-  --main-color: #323232;
-  position: absolute;
-  top: 16px;
-  left: 315px;
-  display: flex;
-  align-items: center;
-}
-
-/* Hide the switch on mobile screens */
-@media (max-width: 768px) {
-  .switch {
-    display: none;
-  }
-}
-
-.toggle {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
-  position: relative;
-  cursor: pointer;
-  width: 50px;
-  height: 20px;
-  background-color: var(--bg-color);
-  transition: 0.3s;
-}
-
-.slider:before {
-  box-sizing: border-box;
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  border: 2px solid var(--main-color);
-  border-radius: 5px;
-  left: 2px;
-  bottom: 2px;
-  background-color: var(--bg-color);
-  box-shadow: 0 3px 0 var(--main-color);
-  transition: 0.3s;
-}
-
-.toggle:checked + .slider {
-  background-color: var(--input-focus); /* Blue background when checked */
-}
-
-.toggle:checked + .slider:before {
-  transform: translateX(30px); /* Move knob to the right */
-}
-
-#windguru-widget {
-    margin-top: 20px;
-    border: 1px dashed #00FF00;
-    padding: 15px;
-    background-color: #000000;
-}
-
-.white-mode #windguru-widget {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-#windguru-widget h3 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-#crypto-widget {
-    margin-top: 20px;
-    border: 1px dashed #00FF00;
-    padding: 15px;
-    background-color: #000000;
-}
-
-.white-mode #crypto-widget {
-    border: 1px solid #3498db;
-    background-color: #ffffff;
-}
-
-#crypto-widget h3 {
-    margin-bottom: 10px;
-}
-
-#breaking-news-banner {
-    background-color: #FF0000;
-    color: #FFFFFF;
-    padding: 10px 0;
-    margin-top: 20px;
-    margin-bottom: 0px;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-}
-
-.white-mode #breaking-news-banner {
-    background-color: #3498db;
-    color: #FFFFFF;
-}
-
-#breaking-news-banner::before {
-    content: "BREAKING NEWS";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    padding: 10px;
-    background-color: #990000;
-    color: #FFFFFF;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    z-index: 1;
-}
-
-.white-mode #breaking-news-banner::before {
-    background-color: #2980b9;
-}
-
-#breaking-news-list {
-    display: inline-block;
-    list-style-type: none;
-    text-transform: uppercase;
-    margin: 0;
-    padding: 0 0 0 150px;
-    animation: scroll-left 120s linear infinite;
-}
-
-#breaking-news-list li {
-    display: inline-block;
-    margin-right: 50px;
-    font-weight: bold;
-}
-
-@keyframes scroll-left {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL TWEETS - LIVE FEED</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+            font-size: 20px;
+        }
+        
+        .terminal-header {
+            border: 2px solid #00ff00;
+            border-bottom: none;
+            padding: 10px 20px;
+            background: #001100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .terminal-title {
+            font-size: 28px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ff00;
+            animation: flicker 3s infinite;
+        }
+        
+        .terminal-time {
+            font-size: 20px;
+            color: #00cc00;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 255, 0, 0.05) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: scan 8s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+        
+        .terminal-body {
+            border: 2px solid #00ff00;
+            border-top: none;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            background: #000000;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .tweet-feed {
+            animation: scroll-up 0.5s linear infinite;
+        }
+        
+        @keyframes scroll-up {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-2px); }
+        }
+        
+        .tweet {
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(0, 255, 0, 0.05);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            animation: tweet-appear 0.5s ease-in;
+        }
+        
+        @keyframes tweet-appear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tweet-header-info {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 18px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .tweet-username {
+            color: #00cc00;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .tweet-date {
+            color: #008800;
+            margin-left: 15px;
+        }
+        
+        .tweet-text {
+            line-height: 1.6;
+            margin: 10px 0;
+            font-size: 20px;
+        }
+        
+        .tweet-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #00ff00;
+            filter: brightness(0.8) contrast(1.2);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #001100;
+            border-top: 2px solid #00ff00;
+            padding: 5px 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .blink {
+            animation: blink 1s step-start infinite;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 28px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-    <div id="utc-clock"></div>
+    <div class="scanline"></div>
     
-    <div id="world-clock">
-      
-
-    <div id="clock-container"></div>
-<div id="breaking-news-banner">
-        <ul id="breaking-news-list"></ul>
-    </div>    
-</div>
-    <h1 class="blink">L8TRUST</h1>
-    <div id="market-status"></div>
-    <div id="major-indices">
-        <h3>Major Indices</h3>
-        <p>
-            <span id="spy-performance">S&P 500: -1.12%</span> |
-            <span id="qqq-performance">Nasdaq 100: -2.33%</span> |
-            <span id="dia-performance">Dow Jones: 0.18%</span>
-        </p>
+    <div class="terminal-header">
+        <div class="terminal-title">▓▓▓ TERMINAL TWEETS - LIVE FEED ▓▓▓</div>
+        <div class="terminal-time" id="time">--:--:--</div>
     </div>
-    <div id="stock-ticker">
-        <div id="ticker-content"></div>
-    </div>
-    <div id="stock-search">
-        <input type="text" id="stock-symbol" placeholder="Enter stock symbol">
-        <button onclick="searchStock()">Search</button>
-        <button onclick="resetSearch()">Reset</button>
-    </div>
-     <div id="stock-info"></div>
-    <div id="sector-performance">
-        <button id="load-sectors">Load Sector Performance</button>
-        <div id="sector-chart" style="display: none;">
-            <h3 id="sector-title">Sector Performance</h3>
-            <!-- Sector data will be loaded here -->
+    
+    <div class="terminal-body">
+        <div id="tweet-container">
+            <div class="loading">>> CHARGEMENT DES DONNÉES<span class="blink">_</span></div>
         </div>
     </div>
-    <!-- New Coin360 widget -->
-<div id="crypto-widget" style="text-align: center; margin-top: 20px;">
-    <h3>Cryptocurrency Market State</h3>
-    <iframe src="https://coin360.com/widget/map?utm_source=embed_map" frameborder="0" title="Coin360.com: Cryptocurrency Market State" width="750" height="400"></iframe>
-</div>
-    <div id="rss-feed">
-        <h3>Latest News</h3>
-        <ul id="news-list"></ul>
-    </div>
-    <div id="airport-weather">
-        <h4>LFML Weather</h4>
-        <div id="lfml-metar-taf"></div>
-        <div id="lfml-notam"></div>
-    </div>
-    <div id="metar-search">
-        <h4>METAR Search</h4>
-        <div class="airport-weather-controls">
-            <input type="text" id="airport-code" placeholder="Enter airport code">
-            <button onclick="fetchAirportWeather()">Get Weather</button>
-            <button onclick="refreshAirportWeather()">Refresh</button>
-        </div>
-        <div id="metar-taf-display"></div>
-        <div id="notam-display"></div>
+    
+    <div class="status-bar">
+        <div>STATUS: <span class="blink">█</span> CONNECTED</div>
+        <div>FEED: <span id="tweet-count">0</span> TWEETS</div>
     </div>
 
-<div id="windguru-widget">
-    <h3>Windguru Forecast</h3>
-    <script id="wg_fwdg_579_100_1724436403308">
-    (function (window, document) {
-      var loader = function () {
-        var arg = ["s=579" ,"m=100","mw=60","uid=wg_fwdg_579_100_1724436403308" ,"wj=knots" ,"tj=c" ,"waj=m" ,"tij=m" ,"odh=0" ,"doh=24" ,"fhours=240" ,"hrsm=2" ,"vt=forecasts" ,"lng=en" ,"idbs=1" ,"ts=1" ,"p=WINDSPD,GUST,SMER,HTSGW,PERPW,DIRPW,TMPE,FLHGT,CDC,TCDC,APCP1s,RATING"];
-        var script = document.createElement("script");
-        var tag = document.getElementsByTagName("script")[0];
-        script.src = "https://www.windguru.cz/js/widget.php?"+(arg.join("&"));
-        tag.parentNode.insertBefore(script, tag);
-      };
-      window.addEventListener ? window.addEventListener("load", loader, false) : window.attachEvent("onload", loader);
-    })(window, document);
-    </script>
-</div>
-<div id="financial-calculator-section">
-    <button id="toggle-mortgage-calculator">Show Mortgage Calculator</button>
-    <div id="financial-calculator" style="display: none;">
-        <h3>Mortgage Calculator</h3>
-        <input type="number" id="loan-amount" placeholder="Loan Amount ($)">
-        <input type="number" id="interest-rate" placeholder="Annual Interest Rate (%)">
-        <input type="number" id="loan-term" placeholder="Loan Term (years)">
-        <button onclick="calculateMortgage()">Calculate</button>
-        <div id="mortgage-result"></div>
-    </div>
-</div>   
-    <div id="refresh-info">This page will refresh in <span id="countdown">120</span> seconds</div>
-</div>
-<script>
-    const apiKey = 'cha3cg1r01qhe0r9rhg0cha3cg1r01qhe0r9rhgg';
-    const marketStatusApiKey = 'NQpPDWBnyk3zbab7leFzAavOzTnNpWjY';
-    let countdown = 120;
-
-    async function fetchMarketStatus() {
-        const marketStatusUrl = `https://api.polygon.io/v1/marketstatus/now?apiKey=${marketStatusApiKey}`;
-        try {
-            const response = await fetch(marketStatusUrl);
-            const data = await response.json();
-            if (!data || data.error) {
-                throw new Error(data ? data.error : 'Unknown error');
-            }
-            displayMarketStatus(data);
-        } catch (error) {
-            console.error('Error fetching market status:', error);
-            document.getElementById('market-status').innerHTML = `
-                <p>Error fetching market status. ${error.message}</p>
-                <p>Check the console for more details.</p>
-            `;
-        }
-    }
-
-    function displayMarketStatus(statusData) {
-        const marketStatusElement = document.getElementById('market-status');
-        const nyseStatus = statusData.exchanges.nyse;
-        const nasdaqStatus = statusData.exchanges.nasdaq;
-
-        function getStatusColor(status) {
-            switch (status) {
-                case 'open':
-                    return '#00FF00';  // Green
-                case 'closed':
-                    return '#FF4500';  // Red
-                case 'extended-hours':
-                    return '#FFA500';  // Orange
-                default:
-                    return '#FFFFFF';  // White (default)
-            }
-        }
-
-        function createStatusSpan(status) {
-            const spanElement = document.createElement('span');
-            spanElement.textContent = status;
-            spanElement.style.backgroundColor = getStatusColor(status);
-            spanElement.style.color = 'black';
-            spanElement.style.padding = '2px 5px';
-            spanElement.style.borderRadius = '3px';
-            spanElement.style.fontWeight = 'bold';
-            return spanElement;
-        }
-
-        marketStatusElement.innerHTML = '';
-        marketStatusElement.appendChild(document.createTextNode('NYSE: '));
-        marketStatusElement.appendChild(createStatusSpan(nyseStatus));
-        marketStatusElement.appendChild(document.createTextNode(' NASDAQ: '));
-        marketStatusElement.appendChild(createStatusSpan(nasdaqStatus));
-    }
-
-    async function fetchIndexPerformance(symbol) {
-        const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
-        return `${changePercent}%`;
-    }
-
-    async function displayIndexPerformance(symbol, elementId, indexName) {
-        const performanceElement = document.getElementById(elementId);
-        try {
-            const changePercent = await fetchIndexPerformance(symbol);
-            if (performanceElement) {
-                const spanElement = document.createElement('span');
-                const numericChange = parseFloat(changePercent);
-                spanElement.textContent = `${numericChange >= 0 ? '+' : ''}${changePercent}`;
-                const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500';
-                spanElement.style.backgroundColor = changeColor;
-                spanElement.style.color = 'black';
-                spanElement.style.padding = '2px 5px';
-                spanElement.style.borderRadius = '3px';
-                spanElement.style.fontWeight = 'bold';
-                performanceElement.innerHTML = `${indexName}: `;
-                performanceElement.appendChild(spanElement);
-            }
-        } catch (error) {
-            console.error(`Error displaying ${indexName} performance:`, error);
-            if (performanceElement) {
-                performanceElement.textContent = `Error displaying ${indexName} performance.`;
-            }
-        }
-    }
-
-async function loadRSSFeed() {
-    const feeds = [
-        { url: 'https://breakingthenews.net/news-feed.xml', name: 'Breaking News' },
-        { url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html', name: 'CNBC' }
-    ];
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-
-    const newsList = document.getElementById('news-list');
-    const breakingNewsList = document.getElementById('breaking-news-list');
-    newsList.innerHTML = '';
-    breakingNewsList.innerHTML = '';
-
-    let allItems = [];
-
-    for (const feed of feeds) {
-        try {
-            const response = await fetch(proxyUrl + encodeURIComponent(feed.url));
-            const xmlText = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-
-            const items = xmlDoc.querySelectorAll('item');
-            items.forEach((item) => {
-                const title = item.querySelector('title').textContent;
-                const link = item.querySelector('link').textContent;
-                const pubDate = new Date(item.querySelector('pubDate').textContent);
-                const description = item.querySelector('description').textContent;
-
-                allItems.push({
-                    title,
-                    link,
-                    pubDate,
-                    description,
-                    feedName: feed.name
-                });
-            });
-        } catch (error) {
-            console.error(`Error fetching RSS feed (${feed.name}):`, error);
-            const errorLi = document.createElement('li');
-            errorLi.textContent = `Error loading ${feed.name} feed. Please try again later.`;
-            newsList.appendChild(errorLi);
-        }
-    }
-
-    // Sort all items by date, newest first
-    allItems.sort((a, b) => b.pubDate - a.pubDate);
-
-    allItems.forEach((item, index) => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = item.link;
-        a.textContent = `[${item.feedName}] ${item.title}`;
-
-        const descriptionSpan = document.createElement('span');
-        descriptionSpan.innerHTML = truncateDescription(item.description, 100);
-
-        const timestampSpan = document.createElement('span');
-        timestampSpan.className = 'news-timestamp';
-        timestampSpan.textContent = formatDate(item.pubDate);
-
-        li.appendChild(a);
-        li.appendChild(document.createElement('br'));
-        li.appendChild(descriptionSpan);
-        li.appendChild(document.createElement('br'));
-        li.appendChild(timestampSpan);
-        newsList.appendChild(li);
-
-        // Add the first 10 items to the breaking news banner
-        if (index < 10) {
-            const breakingLi = document.createElement('li');
-            breakingLi.textContent = `[${item.feedName}] ${item.title}`;
-            breakingNewsList.appendChild(breakingLi);
-        }
-    });
-}
-
-    function truncateDescription(description, maxLength) {
-        const strippedDescription = description.replace(/<[^>]*>/g, '');
-        if (strippedDescription.length > maxLength) {
-            return strippedDescription.substring(0, maxLength);
-        }
-        return strippedDescription;
-    }
-
-    function formatDate(date) {
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.round(diffMs / 60000);
-        const diffHours = Math.round(diffMins / 60);
-
-        if (diffMins < 60) {
-            return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-        } else if (diffHours < 24) {
-            return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-        } else {
-            return date.toLocaleString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                hour: 'numeric', 
-                minute: 'numeric'
-            });
-        }
-    }
-
-    async function fetchStockData(symbol) {
-        const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const changePercent = ((data.c - data.pc) / data.pc * 100).toFixed(2);
-        return { symbol, price: data.c.toFixed(2), changePercent };
-    }
-
-    async function updateStockTicker() {
-        const stocks = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'BRK-B', 'TSM', 'LLY', 'TSLA'];
-        const tickerContent = document.getElementById('ticker-content');
-        tickerContent.innerHTML = '';
-
-        for (const stock of stocks) {
-            try {
-                const { symbol, price, changePercent } = await fetchStockData(stock);
-                const numericChange = parseFloat(changePercent);
-                const changeColor = numericChange >= 0 ? '#00FF00' : '#FF4500';
-                const changeSign = numericChange >= 0 ? '+' : '';
-                
-                tickerContent.innerHTML += `
-    <span>${symbol}: $${price} 
-        <span class="stock-change" style="background-color: ${changeColor}; color: black;">
-            ${changeSign}${changePercent}%
-        </span>
-    </span>
-`;
-            } catch (error) {
-                console.error(`Error fetching data for ${stock}:`, error);
-            }
-        }
-    }
-
-    async function fetchSectorPerformance() {
-        const sectors = [
-            { symbol: 'XLK', name: 'Technology' },
-            { symbol: 'XLV', name: 'Healthcare' },
-            { symbol: 'XLF', name: 'Financials' },
-            { symbol: 'XLE', name: 'Energy' },
-            { symbol: 'XLU', name: 'Utilities' },
-            { symbol: 'XLI', name: 'Industrial' },
-            { symbol: 'XLP', name: 'Consumer Staples' },
-            { symbol: 'XLB', name: 'Materials' },
-            { symbol: 'XLY', name: 'Consumer Cyclical' }
-        ];
-
-        const sectorPerformance = [];
-
-        for (const sector of sectors) {
-            try {
-                const { symbol, name } = sector;
-                const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                const performance = ((data.c - data.pc) / data.pc * 100);
-                sectorPerformance.push({ name, performance });
-            } catch (error) {
-                console.error(`Error fetching data for ${sector.name}:`, error);
-                sectorPerformance.push({ name: sector.name, performance: 0 });
-            }
-        }
-
-        updateSectorChart(sectorPerformance);
-    }
-
-    function updateSectorChart(sectorData) {
-        const chartContainer = document.getElementById('sector-chart');
-        chartContainer.innerHTML = '<h3 id="sector-title">Sector Performance</h3>';
-
-        sectorData.sort((a, b) => b.performance - a.performance);
-        const maxPerformance = Math.max(...sectorData.map(s => Math.abs(s.performance)));
-
-        sectorData.forEach(sector => {
-            const sectorDiv = document.createElement('div');
-            sectorDiv.className = 'sector-bar';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'sector-name';
-            nameSpan.textContent = sector.name;
-
-            const barDiv = document.createElement('div');
-            barDiv.className = 'bar';
-            const width = Math.abs(sector.performance) / maxPerformance * 70;
-            barDiv.style.width = `${width}%`;
-            barDiv.style.backgroundColor = sector.performance >= 0 ? '#00FF00' : '#FF0000';
-
-            const valueSpan = document.createElement('span');
-            valueSpan.className = 'performance-value';
-            valueSpan.textContent = `${sector.performance > 0 ? '+' : ''}${sector.performance.toFixed(2)}%`;
-            valueSpan.style.color = sector.performance >= 0 ? '#00FF00' : '#FF0000';
-
-            sectorDiv.appendChild(nameSpan);
-            sectorDiv.appendChild(barDiv);
-            sectorDiv.appendChild(valueSpan);
-
-            chartContainer.appendChild(sectorDiv);
-        });
-    }
-
-    async function searchStock() {
-        const symbol = document.getElementById('stock-symbol').value.toUpperCase();
-        const stockInfoElement = document.getElementById('stock-info');
-        stockInfoElement.innerHTML = 'Loading...';
-        try {
-            const quoteUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
-            const profileUrl = `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${apiKey}`;
-            const [quoteResponse, profileResponse] = await Promise.all([
-                fetch(quoteUrl),
-                fetch(profileUrl)
-            ]);
-            const quoteData = await quoteResponse.json();
-            const profileData = await profileResponse.json();
-            if (quoteData.error || profileData.error) {
-                throw new Error('Stock not found');
-            }
-            const marketCap = (profileData.marketCapitalization * 1000000).toLocaleString();
-            const peRatio = (quoteData.c / (profileData.finnhubIndustry === 'Technology' ? 20 : 15)).toFixed(2);
-            
-            const percentChange = ((quoteData.c - quoteData.pc) / quoteData.pc * 100).toFixed(2);
-            const changeSign = percentChange >= 0 ? '+' : '';
-            const changeColor = percentChange >= 0 ? '#00FF00' : '#FF4500';
-
-            stockInfoElement.innerHTML = `
-                <h3>${profileData.name} (${symbol})</h3>
-                <p><strong>Industry:</strong> ${profileData.finnhubIndustry}</p>
-                <p><strong>Price:</strong> $${quoteData.c.toFixed(2)} 
-                   <span style="background-color: ${changeColor}; color: black; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
-                     (${changeSign}${percentChange}%)
-                   </span>
-                </p>
-                <p><strong>Market Cap:</strong> $${marketCap}</p>
-                <p><strong>Day's High:</strong> $${quoteData.h.toFixed(2)}</p>
-                <p><strong>Day's Low:</strong> $${quoteData.l.toFixed(2)}</p>
-        <iframe src="https://trendspider.com/markets/embeds/${symbol}/price/?h=300&theme=dark" style="width: 100%; height: 300px;" loading="lazy" title="${symbol} Price Chart | TrendSpider" frameborder="0"></iframe>
-
-            `;
-        } catch (error) {
-            console.error('Error fetching stock data:', error);
-            stockInfoElement.innerHTML = 'Error fetching stock data. Please try again.';
-        }
-    }
-
-    function resetSearch() {
-        document.getElementById('stock-symbol').value = '';
-        document.getElementById('stock-info').innerHTML = '';
-    }
-
-    function updateUTCClock() {
-        const now = new Date();
-        const utcString = now.toUTCString();
-        document.getElementById('utc-clock').textContent = utcString;
-    }
-
-    function refreshAllData() {
-        fetchMarketStatus();
-        displayIndexPerformance('SPY', 'spy-performance', 'S&P 500');
-        displayIndexPerformance('QQQ', 'qqq-performance', 'Nasdaq 100');
-        displayIndexPerformance('DIA', 'dia-performance', 'Dow Jones');
-        updateStockTicker();
-        loadRSSFeed();
-        fetchLFMLWeather();
-        updateUTCClock();
-        countdown = 120;
-    }
-
-    function updateCountdown() {
-        countdown--;
-        document.getElementById('countdown').textContent = countdown;
-        if (countdown <= 0) {
-            refreshAllData();
-        }
-    }
-
-    function getCurrentTimestamp() {
-        return new Date().getTime();
-    }
-
-    async function fetchAirportWeather() {
-        const airportCode = document.getElementById('airport-code').value.toUpperCase();
-        await getAirportWeather(airportCode);
-    }
-
-    async function refreshAirportWeather() {
-        const airportCode = document.getElementById('airport-code').value.toUpperCase();
-        if (airportCode) {
-            await getAirportWeather(airportCode);
-        } else {
-            alert('Please enter an airport code before refreshing.');
-        }
-    }
-
-    async function getAirportWeather(airportCode) {
-        const metarTafDisplay = document.getElementById('metar-taf-display');
-        const notamDisplay = document.getElementById('notam-display');
-        metarTafDisplay.textContent = 'Loading...';
-        notamDisplay.textContent = 'Loading...';
-
-        const corsProxy = 'https://corsproxy.io/?';
-        const timestamp = getCurrentTimestamp();
-        const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=${airportCode}&format=raw&hours=0&_=${timestamp}`)}`;
-        const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=${airportCode}&format=raw&_=${timestamp}`)}`;
-
-        try {
-            const [metarResponse, tafResponse, notamData] = await Promise.all([
-                fetch(metarUrl),
-                fetch(tafUrl),
-                fetchNOTAM(airportCode)
-            ]);
-
-            if (!metarResponse.ok || !tafResponse.ok) {
-                throw new Error('Failed to fetch weather data');
-            }
-
-            const metarText = await metarResponse.text();
-            const tafText = await tafResponse.text();
-
-            let metarTafContent = '';
-            let notamContent = '';
-            
-            metarTafContent += `<div class="weather-section">
-                <h5>METAR:</h5>
-                ${metarText.trim() || 'Not available'}
-            </div>`;
-
-            metarTafContent += `<div class="weather-section">
-                <h5>TAF:</h5>
-                ${tafText.trim() || 'Not available'}
-            </div>`;
-
-            if (notamData && notamData.length > 0) {
-                notamContent += `<h5>NOTAM:</h5>`;
-                notamData.forEach((notam, index) => {
-                    notamContent += `<div class="notam-item">
-                        ${index + 1}. ${notam.ItemQ}: ${notam.ItemE}
-                    </div>`;
-                });
-            } else {
-                notamContent += 'NOTAM: Not available';
-            }
-
-            metarTafDisplay.innerHTML = metarTafContent;
-            notamDisplay.innerHTML = notamContent;
-        } catch (error) {
-            console.error('Error fetching airport data:', error);
-            metarTafDisplay.textContent = `Error: ${error.message}. Please check the airport code and try again.`;
-            notamDisplay.textContent = '';
-        }
-    }
-
-    async function fetchLFMLWeather() {
-        const displayElement = document.getElementById('lfml-metar-taf');
-        displayElement.textContent = 'Loading LFML weather...';
-
-        const corsProxy = 'https://corsproxy.io/?';
-        const timestamp = getCurrentTimestamp();
-        const metarUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/metar?ids=LFML&format=raw&hours=0&_=${timestamp}`)}`;
-        const tafUrl = `${corsProxy}${encodeURIComponent(`https://aviationweather.gov/api/data/taf?ids=LFML&format=raw&_=${timestamp}`)}`;
-
-        try {
-            const [metarResponse, tafResponse, notamData] = await Promise.all([
-                fetch(metarUrl),
-                fetch(tafUrl),
-                fetchNOTAM('LFML')
-            ]);
-
-            if (!metarResponse.ok || !tafResponse.ok) {
-                throw new Error('Failed to fetch LFML weather data');
-            }
-
-            const metarText = await metarResponse.text();
-            const tafText = await tafResponse.text();
-
-            let content = '';
-            
-            if (metarText.trim()) {
-                content += `<strong>METAR:</strong>\n${metarText.trim()}\n\n`;
-            } else {
-                content += `<strong>METAR:</strong> Not available\n\n`;
-            }
-
-            if (tafText.trim()) {
-                content += `<strong>TAF:</strong>\n${tafText.trim()}\n\n`;
-            } else {
-                content += `<strong>TAF:</strong> Not available\n\n`;
-            }
-
-            if (notamData && notamData.length > 0) {
-                content += `<strong>NOTAM:</strong>\n`;
-                notamData.forEach((notam, index) => {
-                    content += `${index + 1}. ${notam.ItemQ}: ${notam.ItemE}\n`;
-                });
-            } else {
-                content += `<strong>NOTAM:</strong> Not available`;
-            }
-
-            displayElement.innerHTML = content;
-        } catch (error) {
-            console.error('Error fetching LFML data:', error);
-            displayElement.textContent = `Error: ${error.message}. Please try again later.`;
-        }
-    }
-
-    async function fetchNOTAM(airportCode) {
-    const apiUrl = `https://api.autorouter.aero/v1.0/notam?itemas=["${airportCode}"]&offset=0&limit=10`;
-    const corsProxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-    try {
-        const response = await fetch(corsProxyUrl);
-        if (!response.ok) {
-            throw new Error('Failed to fetch NOTAM data');
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching NOTAM:', error);
-        return null;
-    }
-}
-function calculateMortgage() {
-    const amount = parseFloat(document.getElementById('loan-amount').value);
-    const rate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12;
-    const term = parseFloat(document.getElementById('loan-term').value) * 12;
-
-    if (isNaN(amount) || isNaN(rate) || isNaN(term)) {
-        document.getElementById('mortgage-result').textContent = 'Please enter valid numbers.';
-        return;
-    }
-
-    const monthlyPayment = (amount * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
-    const totalPayment = monthlyPayment * term;
-
-    document.getElementById('mortgage-result').innerHTML = `
-        Monthly Payment: $${monthlyPayment.toFixed(2)}<br>
-        Total Payment: $${totalPayment.toFixed(2)}
-    `;
-}
-function updateWorldClock() {
-    const cities = [
-        { name: 'New York', timezone: 'America/New_York' },
-        { name: 'Paris', timezone: 'Europe/Paris' },
-        { name: 'London', timezone: 'Europe/London' },
-        { name: 'Tokyo', timezone: 'Asia/Tokyo' },
-        { name: 'Sydney', timezone: 'Australia/Sydney' }
-    ];
-
-    const clockContainer = document.getElementById('clock-container');
-    clockContainer.innerHTML = '';
-
-    cities.forEach(city => {
-        const now = new Date();
-        const cityTime = now.toLocaleString('en-US', { timeZone: city.timezone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-        const cityDate = now.toLocaleDateString('en-US', { timeZone: city.timezone, weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    <script>
+        // CONFIGURATION - Modifiez ces comptes Twitter
+        const TWITTER_ACCOUNTS = ['elonmusk', 'NASA', 'OpenAI', 'TechCrunch'];
+        const REFRESH_INTERVAL = 60000; // 60 secondes
+        const SCROLL_SPEED = 50; // pixels par seconde
         
-        const cityDiv = document.createElement('div');
-        cityDiv.className = 'city-clock';
-        cityDiv.innerHTML = `<strong>${city.name}:</strong> ${cityTime} <small>(${cityDate})</small>`;
-        clockContainer.appendChild(cityDiv);
-    });
-}
-
-    document.addEventListener('DOMContentLoaded', () => {
-        refreshAllData();
-        setInterval(updateCountdown, 1000);
-        setInterval(updateWorldClock, 1000);
-        setInterval(updateUTCClock, 1000);
+        let tweets = [];
+        let tweetCount = 0;
+        let scrollPosition = 0;
         
-        const loadSectorsButton = document.getElementById('load-sectors');
-        loadSectorsButton.addEventListener('click', async () => {
-            const sectorChart = document.getElementById('sector-chart');
-            if (sectorChart.style.display === 'none') {
-                loadSectorsButton.disabled = true;
-                loadSectorsButton.textContent = 'Loading...';
-                sectorChart.style.display = 'block';
+        // Mise à jour de l'heure
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString('fr-FR');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Charger les tweets via RSS (méthode gratuite)
+        async function loadTweets() {
+            const container = document.getElementById('tweet-container');
+            tweets = [];
+            
+            for (const account of TWITTER_ACCOUNTS) {
                 try {
-                    await fetchSectorPerformance();
-                    loadSectorsButton.textContent = 'Hide Sector Performance';
+                    // Utiliser un proxy CORS gratuit + Nitter RSS
+                    const rssUrl = `https://nitter.poast.org/${account}/rss`;
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+                    
+                    const response = await fetch(proxyUrl);
+                    const text = await response.text();
+                    
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(text, 'text/xml');
+                    const items = xml.querySelectorAll('item');
+                    
+                    items.forEach((item, index) => {
+                        if (index < 5) { // 5 tweets par compte
+                            const title = item.querySelector('title')?.textContent || '';
+                            const description = item.querySelector('description')?.textContent || '';
+                            const pubDate = item.querySelector('pubDate')?.textContent || '';
+                            
+                            // Extraire les images du contenu HTML
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = description;
+                            const images = Array.from(tempDiv.querySelectorAll('img')).map(img => img.src);
+                            
+                            // Nettoyer le texte
+                            const cleanText = tempDiv.textContent.trim();
+                            
+                            tweets.push({
+                                username: account,
+                                text: cleanText,
+                                date: new Date(pubDate),
+                                images: images
+                            });
+                        }
+                    });
                 } catch (error) {
-                    console.error('Error loading sector performance:', error);
-                    sectorChart.innerHTML = 'Error loading sector performance. Please try again.';
+                    console.error(`Erreur pour @${account}:`, error);
                 }
-                loadSectorsButton.disabled = false;
-            } else {
-                sectorChart.style.display = 'none';
-                loadSectorsButton.textContent = 'Load Sector Performance';
             }
-        });
-    });
-
-
-document.getElementById('toggle-mode').addEventListener('change', function() {
-    document.documentElement.classList.toggle('white-mode', this.checked);
-});
-
-id="wg_fwdg_579_100_1724343485220">
-(function (window, document) {
-  var loader = function () {
-    var arg = ["s=579" ,"m=100","uid=wg_fwdg_579_100_1724343485220" ,"wj=knots" ,"tj=c" ,"waj=m" ,"tij=cm" ,"odh=0" ,"doh=24" ,"fhours=240" ,"hrsm=2" ,"vt=forecasts" ,"lng=en" ,"idbs=1" ,"ts=1" ,"p=WINDSPD,GUST,SMER,TMP,CDC,TCDC,APCP1s"];
-    var script = document.createElement("script");
-    var tag = document.getElementsByTagName("script")[0];
-    script.src = "https://www.windguru.cz/js/widget.php?"+(arg.join("&"));
-    tag.parentNode.insertBefore(script, tag);
-  };
-  window.addEventListener ? window.addEventListener("load", loader, false) : window.attachEvent("onload", loader);
-})(window, document);
-
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (existing code) ...
-
-    const toggleMortgageCalculatorButton = document.getElementById('toggle-mortgage-calculator');
-    const financialCalculator = document.getElementById('financial-calculator');
-
-    toggleMortgageCalculatorButton.addEventListener('click', () => {
-        if (financialCalculator.style.display === 'none') {
-            financialCalculator.style.display = 'block';
-            toggleMortgageCalculatorButton.textContent = 'Hide Mortgage Calculator';
-        } else {
-            financialCalculator.style.display = 'none';
-            toggleMortgageCalculatorButton.textContent = 'Show Mortgage Calculator';
+            
+            // Trier par date
+            tweets.sort((a, b) => b.date - a.date);
+            
+            // Afficher les tweets
+            displayTweets();
         }
-    });
-
-    // ... (rest of your existing code) ...
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (existing code) ...
-
-    const toggleModeCheckbox = document.getElementById('toggle-mode');
-    
-    // Set initial state of the checkbox
-    toggleModeCheckbox.checked = true;
-
-    toggleModeCheckbox.addEventListener('change', function() {
-        document.documentElement.classList.toggle('white-mode', this.checked);
-    });
-
-    // ... (rest of your existing code) ...
-});
-</script>
-<script src="script.js"></script>
+        
+        function displayTweets() {
+            const container = document.getElementById('tweet-container');
+            container.innerHTML = '';
+            
+            if (tweets.length === 0) {
+                container.innerHTML = '<div class="loading">>> AUCUNE DONNÉE DISPONIBLE<span class="blink">_</span></div>';
+                return;
+            }
+            
+            const feedDiv = document.createElement('div');
+            feedDiv.className = 'tweet-feed';
+            feedDiv.id = 'feed';
+            
+            tweets.forEach(tweet => {
+                const tweetDiv = document.createElement('div');
+                tweetDiv.className = 'tweet';
+                
+                let imagesHtml = '';
+                if (tweet.images && tweet.images.length > 0) {
+                    imagesHtml = tweet.images.map(img => 
+                        `<img src="${img}" class="tweet-image" alt="Image du tweet">`
+                    ).join('');
+                }
+                
+                tweetDiv.innerHTML = `
+                    <div class="tweet-header-info">
+                        <span class="tweet-username">@${tweet.username}</span>
+                        <span class="tweet-date">${formatDate(tweet.date)}</span>
+                    </div>
+                    <div class="tweet-text">${escapeHtml(tweet.text)}</div>
+                    ${imagesHtml}
+                `;
+                
+                feedDiv.appendChild(tweetDiv);
+            });
+            
+            // Dupliquer les tweets pour un scroll infini
+            feedDiv.innerHTML += feedDiv.innerHTML;
+            
+            container.appendChild(feedDiv);
+            tweetCount = tweets.length;
+            document.getElementById('tweet-count').textContent = tweetCount;
+            
+            // Démarrer le scroll
+            startScrolling();
+        }
+        
+        function startScrolling() {
+            const feed = document.getElementById('feed');
+            if (!feed) return;
+            
+            setInterval(() => {
+                scrollPosition += 1;
+                feed.style.transform = `translateY(-${scrollPosition}px)`;
+                
+                // Reset quand on atteint la moitié (boucle infinie)
+                if (scrollPosition >= feed.offsetHeight / 2) {
+                    scrollPosition = 0;
+                }
+            }, SCROLL_SPEED);
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000 / 60);
+            
+            if (diff < 1) return 'À L\'INSTANT';
+            if (diff < 60) return `IL Y A ${diff}MIN`;
+            if (diff < 1440) return `IL Y A ${Math.floor(diff / 60)}H`;
+            return date.toLocaleDateString('fr-FR');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Chargement initial
+        loadTweets();
+        
+        // Rafraîchir périodiquement
+        setInterval(loadTweets, REFRESH_INTERVAL);
+    </script>
 </body>
 </html>
